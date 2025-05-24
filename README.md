@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
@@ -48,3 +49,36 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+=======
+# ZotSwap
+
+A Tinder-like application that helps UCI students connect and trade skills — whether it's tutoring, lifting, graphic design, or anything else you'd love to swap.
+
+---
+
+## Prerequisites
+
+Before you can run the project, ensure the following are installed:
+
+- **Node.js** (LATEST version recommended)
+- **npm** (comes with Node.js)
+- **Expo Go** (Download from App Store or Google Play for mobile demoing)
+
+---
+
+## Project Structure
+
+The project consists of a single codebase using React Native and Firebase:
+
+- **`zotswap/`**: React Native app with Expo and Firebase integration
+
+---
+
+## Setup Instructions
+
+### Cloning the Project
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Jollibuilders/ZotSwap.git
+>>>>>>> db4fa91d04ddc30ceb46b91f4273d6a53902bcab

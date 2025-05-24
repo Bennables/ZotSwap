@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/users', usersRouter);
+app.use('/auth', authRouter);
 
 mongoose.connect(process.env.DB_URL)
   .then(() => {

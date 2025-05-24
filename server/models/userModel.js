@@ -80,9 +80,8 @@ UserSchema.methods.setPassword = async function (password) {
  * Method to compare a given password with the stored hashed password
  * @param {*} password - The password to compare
  */
-UserSchema.methods.setPassword = async function (password) {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(password, salt);
+UserSchema.methods.validatePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
 }
 
 module.exports = mongoose.model('User', UserSchema);

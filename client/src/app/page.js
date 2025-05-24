@@ -1,12 +1,16 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client';
+
+import Image from 'next/image';
+import styles from './page.module.css';
+import ProfileViewer from './components/ProfileViewer';
+import SignUp from './components/SignUp'
 
 export default function Home() {
   return (
-    <main className="h-screen flex items-center justify-center">
-      <h1 className="text-3xl font-bold text-red-500">
-        Tailwind on! 🚀
-      </h1>
+    <main className={styles.main}>
+      <div className="w-full flex justify-center my-10">
+        <ProfileViewer />
+      </div>
     </main>
-  )
+  );
 }

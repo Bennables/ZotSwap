@@ -12,7 +12,7 @@ const SwipeableCard = () => {
     onSwipedLeft: (swipeEventData) => {
         setSwipeDir("Swiped Left");
         if(swipeEventData.event.target){
-            animate(swipeEventData.event.target, { opacity: 0.1, x: -400 }, { duration: 0.5 }).finished.then(() => {
+            animate(swipeEventData.event.target, { opacity: 0.1, x: -450}, { duration: 0.5 }).finished.then(() => {
             window.location.reload(); // 👈 replace with actual path
         });
         }
@@ -20,7 +20,7 @@ const SwipeableCard = () => {
     onSwipedRight: (swipeEventData) => {
         setSwipeDir('Swiped Right');
         if(swipeEventData.event.target){
-            animate(swipeEventData.event.target, { opacity: 0.1, x: 400 }, { duration: 0.5 }).finished.then(() => {
+            animate(swipeEventData.event.target, { opacity: 0.1, x: 450}, { duration: 0.5 }).finished.then(() => {
             window.location.reload(); // 👈 replace with actual path
         });
         }

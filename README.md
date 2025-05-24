@@ -1,6 +1,6 @@
 # ZotSwap
 
-**ZotSwap** is a skill-trading platform for UCI students — a web application where users can connect and exchange skills such as tutoring, fitness training, graphic design, and more.
+**ZotSwap** is a skill-trading platform for UCI students — a full-stack web application where users can connect and exchange skills such as tutoring, fitness training, graphic design, and more.
 
 ---
 
@@ -10,22 +10,16 @@ Before you begin, make sure you have the following installed:
 
 - [Node.js](https://nodejs.org/) (latest version recommended)
 - npm (comes bundled with Node.js)
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account (or a local MongoDB instance)
 
 ---
 
 ## 📁 Project Structure
 
-This is a full-stack web application built with:
+This is a MERN stack application:
 
-- **Frontend**: React (with Tailwind CSS)
-- **Backend**: Firebase (Authentication, Firestore, Storage)
+- **Frontend**: React + Tailwind CSS
+- **Backend**: Node.js + Express
+- **Database**: MongoDB (via Mongoose)
+- **Authentication**: JSON Web Tokens (JWT)
 
----
-
-## 🛠️ Setup Instructions
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/Jollibuilders/ZotSwap.git
-cd ZotSwap

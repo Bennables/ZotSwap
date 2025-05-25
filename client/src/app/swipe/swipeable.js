@@ -1,39 +1,15 @@
 import { useSwipeable } from 'react-swipeable';
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {animate} from 'motion';
 import { useRouter} from 'next/navigation'
+// import { useState, useEffect } from 'react';
 import "./styles.css"
-
-
-
 
 export default function SwipeableCard({currentUserId}) {
   const [profiles, setProfiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [swipeDir, setSwipeDir] = useState('');
   const router = useRouter();
-
-  const handlers = useSwipeable({
-    onSwipedLeft: (swipeEventData) => {
-        setSwipeDir("Swiped Left");
-        if(swipeEventData.event.target){
-            animate(swipeEventData.event.target, { opacity: 0.1, x: -400 }, { duration: 0.5 }).finished.then(() => {
-            window.location.reload(); // 👈 replace with actual path
-        });
-        }
-    },
-    onSwipedRight: (swipeEventData) => {
-        setSwipeDir('Swiped Right');
-        if(swipeEventData.event.target){
-            animate(swipeEventData.event.target, { opacity: 0.1, x: 400 }, { duration: 0.5 }).finished.then(() => {
-            window.location.reload(); // 👈 replace with actual path
-        });
-        }
-
-    },
-    preventScrollOnSwipe: true,
-    trackMouse: true // allows testing on desktop
-  });
 
   useEffect(() => {
     // Fetch profiles from backend
@@ -45,6 +21,32 @@ export default function SwipeableCard({currentUserId}) {
       })
       .catch(err => console.error('Failed to fetch profiles', err));
   }, [currentUserId]);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: (swipeEventData) => {
+        setSwipeDir("Swiped Left");
+        if(swipeEventData.event.target){
+            handleLike
+            animate(swipeEventData.event.target, { opacity: 0.1, x: -400 }, { duration: 0.5 }).finished.then(() => {
+            window.location.reload(); // 👈 replace with actual path
+        });
+        }
+    },
+    onSwipedRight: (swipeEventData) => {
+        setSwipeDir('Swiped Right');
+        if(swipeEventData.event.target){
+            handleLike
+            animate(swipeEventData.event.target, { opacity: 0.1, x: 400 }, { duration: 0.5 }).finished.then(() => {
+            window.location.reload(); // 👈 replace with actual path
+        });
+        }
+
+    },
+    preventScrollOnSwipe: true,
+    trackMouse: true // allows testing on desktop
+  });
+
+  
   
 
   const handleNext = () => {
@@ -61,14 +63,9 @@ export default function SwipeableCard({currentUserId}) {
       body: JSON.stringify({ senderId, receiverId })
     });
   };
-  
-  if (profiles.length === 0) return <p className="text-center">Loading profiles...</p>;
-
-  const user = profiles[currentIndex] || {};
-
   return (
-    <div {...handlers} className="max-w-sm mx-auto mt-10 bg-white rounded-xl shadow-lg p-6 text-center box">
-        <div>{swipeDir || "HELLOOO"}
+    <div {...handlers} className = 'box'>
+      <div>{swipeDir || <div {...handlers} className="max-w-sm mx-auto mt-10 bg-white rounded-xl shadow-lg p-6 text-center box">
       <img
         src={user.profilePicture || '/mnt/data/PFP.png'}
         className="w-28 h-28 rounded-full mx-auto mb-4 object-cover shadow-md"
@@ -100,18 +97,15 @@ export default function SwipeableCard({currentUserId}) {
           ✕
         </button>
       </div>
-        </div>
+    </div>}</div>
+        
     </div>
   );
   
+  
+
+
+ 
 }
 
 
-
-
- return (
-    <div {...handlers} className = 'box'>
-      <h3>{swipeDir || 'Swipe me!'}</h3>
-    </div>
-  );
-};

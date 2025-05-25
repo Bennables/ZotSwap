@@ -45,7 +45,7 @@ export default function SwipeableCard({currentUserId}) {
     preventScrollOnSwipe: true,
     trackMouse: true // allows testing on desktop
   });
-
+  
   
   
 
@@ -63,9 +63,14 @@ export default function SwipeableCard({currentUserId}) {
       body: JSON.stringify({ senderId, receiverId })
     });
   };
+
+  if (profiles.length === 0) return <p className="text-center">Loading profiles...</p>;
+
+  const user = profiles[currentIndex] || {};
+  
   return (
     <div {...handlers} className = 'box'>
-      <div>{swipeDir || <div {...handlers} className="max-w-sm mx-auto mt-10 bg-white rounded-xl shadow-lg p-6 text-center box">
+      <div>{swipeDir || <div className="max-w-sm mx-auto mt-10 bg-white rounded-xl shadow-lg p-6 text-center box">
       <img
         src={user.profilePicture || '/mnt/data/PFP.png'}
         className="w-28 h-28 rounded-full mx-auto mb-4 object-cover shadow-md"

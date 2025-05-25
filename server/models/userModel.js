@@ -1,6 +1,49 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
+  // Authentication and identity fields
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    minlength: 3,
+    maxlength: 20,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    sparse: true,
+    validate: {
+      validator: function (v) {
+        return /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid email!`
+    },
+    trim: true,
+  },
+  phone: {
+    type: String,
+    unique: true,
+    sparse: true,
+    validate: {
+      validator: function (v) {
+        return /^(\+?\d{1,3}[- ]?)?\d{10}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+    trim: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 6,
+    select: false, // Exclude from queries by default
+  },
+
+  // Define the schema for the User model
   name: String,
   age: Number,
   profilePicture: String,
@@ -12,14 +55,9 @@ const UserSchema = new mongoose.Schema({
   socials: String,
   skillsWanted: String,
   skillsOffered: String,
-<<<<<<< Updated upstream
-});
 
-module.exports = mongoose.model('User', UserSchema);
-=======
-  likesSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  likesReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+
+  // Ratings
   ratingSum: {
     type: Number,
     default: 0,
@@ -48,6 +86,4 @@ UserSchema.methods.validatePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 }
 
-module.exports = mongoose.models.User || mongoose.model('User', UserSchema);
-
->>>>>>> Stashed changes
+module.exports = mongoose.model('User', UserSchema);

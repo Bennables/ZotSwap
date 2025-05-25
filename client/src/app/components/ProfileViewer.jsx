@@ -40,21 +40,22 @@ export default function ProfileViewer({currentUserId}) {
     <div className="max-w-sm mx-auto mt-10 bg-white rounded-xl shadow-lg p-6 text-center">
   
       <img
-        src={user.profilePicture || '/mnt/data/PFP.png'}
+        src={user.profilePicture || '/images/default-profile.png'}
         className="w-28 h-28 rounded-full mx-auto mb-4 object-cover shadow-md"
+        alt={`${user.firstName} ${user.lastName}'s profile`}
       />
   
       <h3 className="text-lg font-bold">
-        {user.name || 'Name'} <span className="font-normal">{user.age || ''}</span>
+        {user.firstName} {user.lastName} <span className="font-normal">{user.age || ''}</span>
       </h3>
   
       <div className="text-md font-semibold my-2">About Me</div>
   
       <div className="text-md font-semibold mb-1">Skills I have!</div>
-      <p className="text-gray-600 mb-4">{user.skillsOffered || 'No skills offered listed'}</p>
+      <p className="text-gray-600 mb-4">{user.skillsOffered?.join(', ') || 'No skills offered listed'}</p>
   
       <div className="text-md font-semibold mb-1">Skills I want!</div>
-      <p className="text-gray-600 mb-4">{user.skillsWanted || 'No skills wanted listed'}</p>
+      <p className="text-gray-600 mb-4">{user.skillsWanted?.join(', ') || 'No skills wanted listed'}</p>
   
       <div className="flex justify-center space-x-6 mt-6">
         <button

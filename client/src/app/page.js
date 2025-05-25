@@ -53,60 +53,48 @@ export default function Home() {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center bg-gray-100">
-      <div className="w-[393px] h-[852px] relative bg-[#F7FAFC] overflow-hidden">
-        <main className="min-h-screen flex items-center justify-center bg-[#F7FAFC] p-4">
-          <div className="w-full max-w-md p-8 rounded-3xl shadow-lg bg-[#F7FAFC] border border-[#6A89A7] flex flex-col items-center">
-            <h1 className="text-2xl font-bold text-[#384959] mb-8 mt-2 text-center">Welcome to ZotSwap!</h1>
-emailUpdates
-            
-            <form onSubmit={handleSignIn} className="w-full">
-              <div className="mb-4 w-full">
-                <label className="block text-[#384959] text-sm font-semibold mb-2" htmlFor="identifier">Identifier (Email, Username, or Phone)</label>
-                <input
-                  className="shadow appearance-none border border-[#6A89A7] rounded w-full py-2 px-3 text-[#384959] leading-tight focus:outline-none focus:shadow-outline"
-                  id="identifier"
-                  type="text"
-                  placeholder="Email, Username, or Phone"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  disabled={loading}
-                />
-              </div>
-              <div className="mb-6 w-full">
-                <label className="block text-[#384959] text-sm font-semibold mb-2" htmlFor="password">Password</label>
-                <input
-                  className="shadow appearance-none border border-[#6A89A7] rounded w-full py-2 px-3 text-[#384959] leading-tight focus:outline-none focus:shadow-outline"
-                  id="password"
-                  type="password"
-                  placeholder="**********"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                />
-              </div>
-              
-              {error && <p className="text-red-500 text-xs italic mb-4 text-center">{error}</p>}
+    <div className="fixed inset-0 flex justify-center bg-gray-100 p-4">
+      <div className="w-full max-w-md bg-[#F7FAFC] rounded-3xl shadow-lg border border-[#6A89A7] flex flex-col items-center overflow-hidden md:h-auto">
+        <div className="w-full p-8 flex flex-col items-center">
+          <h1 className="text-2xl font-bold text-[#384959] mb-8 mt-2 text-center">Welcome to ZotSwap!</h1>
 
-              <button
-                className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition disabled:opacity-50"
-                type="submit"
+          <form onSubmit={handleSignIn} className="w-full">
+            <div className="mb-4 w-full">
+              <label className="block text-[#384959] text-sm font-semibold mb-2" htmlFor="identifier">Identifier (Email, Username, or Phone)</label>
+              <input
+                className="shadow appearance-none border border-[#6A89A7] rounded w-full py-2 px-3 text-[#384959] leading-tight focus:outline-none focus:shadow-outline"
+                id="identifier"
+                type="text"
+                placeholder="Email, Username, or Phone"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 disabled={loading}
-              >
-                {loading ? 'Signing In...' : 'Sign In'}
-              </button>
-            </form>
+              />
+            </div>
+            <div className="mb-6 w-full">
+              <label className="block text-[#384959] text-sm font-semibold mb-2" htmlFor="password">Password</label>
+              <input
+                className="shadow appearance-none border border-[#6A89A7] rounded w-full py-2 px-3 text-[#384959] leading-tight focus:outline-none focus:shadow-outline"
+                id="password"
+                type="password"
+                placeholder="**********"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+            
+            {error && <p className="text-red-500 text-xs italic mb-4 text-center">{error}</p>}
 
-            {/* Placeholder for social sign-ins - can keep or remove */}
-            {/* <button className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#6A89A7] hover:bg-[#384959] transition">Sign In with UCINETID</button>
-            <button className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#6A89A7] hover:bg-[#384959] transition">Sign In with Google</button>
-            <button className="w-full py-3 mb-6 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#6A89A7] hover:bg-[#384959] transition">Sign In with Apple</button> */}
+            <button
+              className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition disabled:opacity-50"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? 'Signing In...' : 'Sign In'}
+            </button>
+          </form>
 
-=======
-            <button className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition">Sign In with UCINETID</button>
-            <button className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition">Sign In with Google</button>
-            <button className="w-full py-3 mb-6 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition">Sign In with Apple</button>
-main
             <div className="flex items-center w-full mb-4">
               <div className="flex-grow border-t border-[#6A89A7]" />
               <span className="mx-2 text-[#384959] text-sm">Don't have a ZotSwap account?</span>
@@ -118,7 +106,6 @@ main
               </button>
             </Link>
           </div>
-        </main>
       </div>
     </div>
   );

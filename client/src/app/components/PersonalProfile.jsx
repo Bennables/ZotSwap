@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/authContext';
 
 // Default profile image path - used when user hasn't uploaded their own image
-const DEFAULT_PROFILE_IMAGE = '/images/temporary-profile-picture.jpg';
+const DEFAULT_PROFILE_IMAGE = '/images/default-profile.jpg';
 
 /**
  * SocialIcon Component - Renders social media icons with links
@@ -169,7 +169,9 @@ export default function PersonalProfile() {
 
                   {/* Name and Age Section */}
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <h1 className="text-2xl font-bold text-[#384959]">{userProfile.name || 'Name'}</h1>
+                    <h1 className="text-2xl font-bold text-[#384959]">
+                      {userProfile.firstName} {userProfile.lastName}
+                    </h1>
                     <span className="text-lg text-[#6A89A7]">{userProfile.age || ''}</span>
                   </div>
 

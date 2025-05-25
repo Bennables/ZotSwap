@@ -1,13 +1,8 @@
 'use client';
 
-emailUpdates
-import React, { useState, useContext, use } from 'react';
+import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '../context/authContext'; // Add this line
-=======
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-main
 
 const yearOptions = [
   '1st',
@@ -44,8 +39,8 @@ function formatPhoneNumber(value) {
 }
 
 export default function SignUp() {
-   const router = useRouter();
- const { setUserEmail } = useContext(AuthContext);
+  const router = useRouter();
+  const { setUserEmail } = useContext(AuthContext);
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(20);
   const [loading, setLoading] = useState(false);
@@ -83,8 +78,6 @@ export default function SignUp() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [skillsError, setSkillsError] = useState('');
 
-  const router = useRouter();
-
   // Progress values for each step (now 6 steps)
   const stepProgress = [Math.round((1/6)*100), Math.round((2/6)*100), Math.round((3/6)*100), Math.round((4/6)*100), Math.round((5/6)*100), 100];
 
@@ -93,75 +86,83 @@ export default function SignUp() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleStartSwapping = async () => {
-  setLoading(true);
-  setError('');
-  setSuccess(false);
-  try {
-    // Format the data according to backend requirements
-    const userData = {
-      firstName: form.firstName.trim(),
-      lastName: form.lastName.trim(),
-      age: parseInt(form.age),
-      location: form.location.trim(),
-      year: form.year.trim(),
-      email: form.email.trim(),
-      password: form.password,
-      phone: form.phone ? `${form.countryCode}${form.phone.replace(/\D/g, '')}` : undefined,
-      instagram: form.instagram || '',
-      snapchat: form.snapchat || '',
-      tiktok: form.tiktok || '',
-      discord: form.discord || '',
-      twitter: form.twitter || '',
-      skillsWanted: form.skillsWanted,
-      skillsOffered: form.skillsOffered
-    };
+  const uploadData = async (formValues) => {
+    if (loading) return; // Prevent double submission
+    setLoading(true);
+    setError('');
+    setSuccess(false);
 
-    // Debug logs
-    console.log('Form data:', form);
-    console.log('User data being sent:', userData);
-    console.log('Required fields check:', {
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      age: userData.age,
-      location: userData.location,
-      year: userData.year,
-      email: userData.email,
-      password: userData.password
-    });
-    console.log('Password value from form state before sending:', form.password);
+    try {
+      // Format the data according to backend requirements
+      const userData = {
+        firstName: formValues.firstName.trim(),
+        lastName: formValues.lastName.trim(),
+        age: parseInt(formValues.age),
+        location: formValues.location.trim(),
+        year: formValues.year.trim(),
+        email: formValues.email.trim().toLowerCase(),
+        password: formValues.password,
+        phone: formValues.phone ? `${formValues.countryCode}${formValues.phone.replace(/\D/g, '')}` : undefined,
+        instagram: formValues.instagram || '',
+        snapchat: formValues.snapchat || '',
+        tiktok: formValues.tiktok || '',
+        discord: formValues.discord || '',
+        twitter: formValues.twitter || '',
+        skillsWanted: formValues.skillsWanted,
+        skillsOffered: formValues.skillsOffered
+      };
 
-    // Send the form data to the backend
-    const response = await fetch('http://localhost:4000/api/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
-    });
-    
-    const responseData = await response.json();
-    console.log('Backend response:', responseData);
+      // Debug log
+      console.log('Sending user data:', userData);
 
-    if (!response.ok) {
-      throw new Error(responseData.error || 'Signup failed');
+      const response = await fetch('http://localhost:4000/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 409) {
+          throw new Error('This email address is already registered. Please use a different email or try logging in.');
+        } else {
+          throw new Error(responseData.error || 'Signup failed. Please check all required fields.');
+        }
+      }
+
+      console.log('Success:', responseData);
+      
+      // Use AuthContext to set user email after successful signup
+      setUserEmail(responseData.email);
+      setSuccess(true);
+      
+      // Redirect to the main app page after successful signup
+      router.push('/swipe');
+      
+      return responseData;
+    } catch (error) {
+      console.error('Upload failed:', error);
+      setError(error.message);
+      throw error;
+    } finally {
+      setLoading(false);
     }
+  };
 
-    console.log('Signup successful. Backend response:', responseData);
-    
-    // Use AuthContext to set user email after successful signup
-    setUserEmail(responseData.email);
-    console.log('Stored userEmail using AuthContext:', responseData.email);
+  // Simplified handleStartSwapping to just call uploadData
+  const handleStartSwapping = async () => {
+    try {
+      await uploadData(form);
+    } catch (error) {
+      // Error is already handled in uploadData
+      console.error('Start swapping failed:', error);
+    }
+  };
 
-    setSuccess(true);
-    // Redirect to the main app page after successful signup
-    router.push('/swipe');
-
-  } catch (err) {
-    console.error('Signup error:', err);
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     if (!files || files.length === 0) return;
@@ -237,7 +238,7 @@ const handleStartSwapping = async () => {
     if (step === 1) {
       // Validate all fields
       const errors = {};
-      if (!form.firstName) errors.Name = 'First name is required';
+      if (!form.firstName) errors.firstName = 'First name is required';
       if (!form.lastName) errors.lastName = 'Last name is required';
       if (!form.age) errors.age = 'Age is required';
       if (!form.year) errors.year = 'Year in school is required';
@@ -289,7 +290,6 @@ const handleStartSwapping = async () => {
       setProgress(stepProgress[5]);
       return;
     }
-uploading
     if (step === 6) {
       setLoading(true);
 
@@ -304,7 +304,6 @@ uploading
       }
       return;
     }
-main
   };
 
   // Add skip for now for talents showcase
@@ -329,50 +328,15 @@ main
     }
   };
 
-  const uploadData = async (formValues) =>{
-    try {
-    
-    const payload = new FormData();
+  // Add cleanup on component unmount
+  React.useEffect(() => {
+    return () => {
+      setLoading(false);
+      setError('');
+      setSuccess(false);
+    };
+  }, []);
 
-
-    payload.append('name', `${formValues.firstName} ${formValues.lastName}`.trim());
-
-    const skipKeys = ['video', 'image', 'skillsOffered', 'skillsWanted', 'firstName', 'lastName'];
-    Object.entries(formValues).forEach(([key, value]) => {
-      if (!skipKeys.includes(key)) {
-        payload.append(key, value);
-      }
-    });
-    for (let pair of payload.entries()) {
-  console.log(`${pair[0]}: ${pair[1]}`);
-}
-    
-    // Append arrays as JSON strings
-    payload.append('skillsOffered', JSON.stringify(formValues.skillsOffered));
-    payload.append('skillsWanted', JSON.stringify(formValues.skillsWanted));
-
-    // Append files if present
-    if (formValues.video) payload.append('video', formValues.video);
-    if (formValues.image) payload.append('image', formValues.image);
-
-    const response = await fetch('http://localhost:4000/api/users', {
-      method: 'POST',
-      body: payload,
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Server error: ${response.status} ${errorText}`);
-    }
-
-    const data = await response.json();
-    console.log('Success:', data);
-    return data;
-  } catch (error) {
-    console.error('Upload failed:', error);
-    alert(`Error uploading data: ${error.message}`);
-  }
-};
   return (
     <div className="w-[393px] h-[852px] bg-white rounded-none shadow-none flex flex-col justify-between mx-auto p-0" style={{ minHeight: '852px', minWidth: '393px' }}>
       {/* Progress Bar with Fraction */}
@@ -404,21 +368,13 @@ main
               >
                 Back
               </button>
-emailUpdates
-              <button 
-  className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition"
-  onClick={handleStartSwapping}
-  type="button"
->
-  Start Swapping
-</button>
-=======
-              <button className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition" onClick={() => {
-                console.log('Start Swapping button clicked');
-                router.push('/swipe');
-                console.log('Navigating to /swipe');
-              }}>Start Swapping</button>
-main
+              <button
+                className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition"
+                onClick={handleStartSwapping}
+                type="button"
+              >
+                Start Swapping
+              </button>
             </div>
           </div>
         ) : step === 5 ? (

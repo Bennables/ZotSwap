@@ -50,21 +50,9 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/users - Create a new user profile
-router.post('/', upload.any(), async (req, res) => {
+router.post('/', async (req, res) => {
   try {
- uploading
-    const { name, location, year, talents } = req.body;
-    let skillsWanted = JSON.parse(req.body.skillsWanted || '[]');
-    skillsWanted= skillsWanted.join(', '); 
-    let skillsOffered = JSON.parse(req.body.skillsOffered || '[]');
-    skillsOffered= skillsOffered.join(', ');  
-    
-    
-
-    if (!name || !location || !year) {
-      return res.status(400).json({ error: 'Name, location, and year are required fields' });
-    }
-
+    // Consolidate variable extraction, remove merge conflicts and duplicates
     const { 
       firstName,
       lastName,
@@ -84,16 +72,15 @@ router.post('/', upload.any(), async (req, res) => {
       password // <-- Add password here
     } = req.body;
     
-    // Validation
-    if (!firstName || !lastName || !age || !location || !year || !email) {
+    // Validation - Keep basic checks
+    if (!firstName || !lastName || !age || !location || !year || !email || !password) {
       return res.status(400).json({ 
-        error: 'First name, last name, age, location, year, and email are required fields' 
+        error: 'First name, last name, age, location, year, email, and password are required fields' // Update error message
       });
     }
     
-    // Combine first and last name for the 'name' field (if you still need it, otherwise remove 'name' from model/schema)
-    // Assuming 'name' is no longer needed based on model update, using firstName and lastName instead.
- main
+    // Mongoose model validation will handle password required check
+    // if (!firstName || !lastName || !age || !location || !year || !email) { /* remove duplicate validation */ }
 
     const newUser = new User({
       firstName: firstName.trim(),
@@ -102,10 +89,6 @@ router.post('/', upload.any(), async (req, res) => {
       location: location.trim(),
       year: year.trim(),
       talents: talents || '',
- uploading
-      skillsWanted:skillsWanted, // Convert back to string
-      skillsOffered: skillsOffered, // Convert back to string
-
       skillsWanted: skillsWanted || [], // Ensure it's an array
       skillsOffered: skillsOffered || [], // Ensure it's an array
       instagram: instagram || '',
@@ -115,8 +98,7 @@ router.post('/', upload.any(), async (req, res) => {
       twitter: twitter || '',
       phone: phone || '',
       email: email.trim(),
-      password: password // <-- Add password here
- main
+      // password field is added and hashed below
     });
     
     // We should hash the password before saving
@@ -137,8 +119,6 @@ router.post('/', upload.any(), async (req, res) => {
     res.status(500).json({ error: 'Failed to create user profile' });
   }
 });
-
- uploading
 
 // GET /api/users/me - Fetch the currently authenticated user's profile using email in header
 router.get('/me', async (req, res) => {
@@ -163,7 +143,6 @@ router.get('/me', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch user profile' });
   }
 });
- main
 
 // GET /api/users/:id - Get a specific user by ID
 // NOTE: This route might be redundant if /me is used for the current user

@@ -1,0 +1,13 @@
+.h2{
+
+    color:red;
+}
+.box{
+    color: green;
+    background-color:orange;
+    height:800px;
+    width: 100%;
+}
+main{
+    background-color:black
+}

@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaInstagram, FaTiktok, FaSnapchat, FaTwitter, FaDiscord, FaCog } from 'react-icons/fa';
+import { useContext } from 'react';
+import { AuthContext } from '../context/authContext';
 
 // Default profile image path - used when user hasn't uploaded their own image
 const DEFAULT_PROFILE_IMAGE = '/images/temporary-profile-picture.jpg';
@@ -45,29 +47,66 @@ const SocialIcon = ({ platform, handle }) => {
  */
 export default function PersonalProfile() {
   // User profile data state
-  const [userProfile] = useState({
-    name: "John Doe",
-    year: "Junior",
-    age: 20,
-    location: "Irvine, CA",
-    profilePicture: DEFAULT_PROFILE_IMAGE,
-    skillsTeaching: ["Piano", "Python", "Spanish", "Photography", "Cooking", "Chess"],
-    skillsLearning: ["Guitar", "React", "Korean", "Drawing", "Skateboarding", "Tennis"],
-    socials: {
-      instagram: "johndoe",
-      tiktok: "",
-      snapchat: "johndoe",
-      twitter: "",
-      discord: "johndoe#1234"
-    },
-    aboutMe: "Hey! I'm a UCI student passionate about learning and teaching new skills. I love sharing my knowledge of music and programming while exploring new hobbies!",
-    skillDemo: {
-      type: "video",
-      url: "https://www.w3schools.com/tags/movie.mp4",
-      title: "Piano Performance",
-      description: "A short demonstration of my piano skills"
+  const [userProfile, setUserProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Get userEmail and isInitialLoad from AuthContext
+  const { userEmail, isInitialLoad } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        // Replace with your actual authenticated endpoint to fetch the current user's profile
+        // Assuming user email is stored in localStorage or a context after login
+        // const userEmail = localStorage.getItem('userEmail'); // Placeholder: Get email from localStorage
+
+        // Wait for initial load from localStorage to complete in AuthContext
+        if (isInitialLoad) {
+          return;
+        }
+
+        if (!userEmail) {
+          // Set error only after initial load is complete and no email is found
+          setError('User email not found. Please log in.');
+          setLoading(false);
+          return;
+        }
+
+        // Clear error if email is found after a previous error
+        if (error && userEmail) {
+            setError(null);
+        }
+
+        const response = await fetch('http://localhost:4000/api/users/me', {
+          headers: {
+            'X-User-Email': userEmail // Send email in custom header
+          }
+        });
+
+        if (!response.ok) {
+          // Assuming backend sends { error: message } on failure
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch user profile');
+        }
+        const data = await response.json();
+        setUserProfile(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    // Fetch profile only if userEmail is available AND initial load is complete
+    if (!isInitialLoad && userEmail) {
+        fetchUserProfile();
+    } else if (!isInitialLoad && !userEmail) {
+        // If initial load is done but no email is found, set loading to false
+        setLoading(false);
     }
-  });
+
+  }, [userEmail, isInitialLoad]); // Dependency array includes userEmail and isInitialLoad
 
   /**
    * Renders the skill demonstration section if available
@@ -112,85 +151,93 @@ export default function PersonalProfile() {
                 <FaCog className="w-6 h-6 text-white" />
               </button>
 
-              {/* Profile Picture Section */}
-              <div className="relative w-32 h-32 mx-auto mb-4">
-                <Image
-                  src={userProfile.profilePicture}
-                  alt="Profile"
-                  layout="fill"
-                  className="rounded-full object-cover"
-                  priority
-                />
-              </div>
-              
-              {/* Name and Age Section */}
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <h1 className="text-2xl font-bold text-[#384959]">{userProfile.name}</h1>
-                <span className="text-lg text-[#6A89A7]">{userProfile.age}</span>
-              </div>
+              {loading && <p className="text-center">Loading profile...</p>}
+              {!loading && error && <p className="text-center text-red-500">Error: {error}</p>}
 
-              {/* Location and Year Section */}
-              <div className="text-[#384959] mb-6">
-                <p>{userProfile.location} • {userProfile.year}</p>
-              </div>
-
-              {/* Skills Section */}
-              <div className="bg-white rounded-lg p-4 mb-4 shadow-md">
-                {/* Teaching Skills */}
-                <div className="mb-4">
-                  <h2 className="text-lg font-semibold text-[#384959] mb-2">Teaching</h2>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {userProfile.skillsTeaching.map((skill, index) => (
-                      <span 
-                        key={index}
-                        className="bg-[#6A89A7] text-white px-3 py-1 rounded-full text-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
+              {userProfile && (
+                <>
+                  {/* Profile Picture Section */}
+                  <div className="relative w-32 h-32 mx-auto mb-4">
+                    <Image
+                      src={userProfile.profilePicture || DEFAULT_PROFILE_IMAGE}
+                      alt="Profile"
+                      layout="fill"
+                      className="rounded-full object-cover"
+                      priority
+                    />
                   </div>
-                </div>
 
-                {/* Learning Skills */}
-                <div>
-                  <h2 className="text-lg font-semibold text-[#384959] mb-2">Learning</h2>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {userProfile.skillsLearning.map((skill, index) => (
-                      <span 
-                        key={index}
-                        className="bg-[#BDDDFC] text-[#384959] px-3 py-1 rounded-full text-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
+                  {/* Name and Age Section */}
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <h1 className="text-2xl font-bold text-[#384959]">{userProfile.name || 'Name'}</h1>
+                    <span className="text-lg text-[#6A89A7]">{userProfile.age || ''}</span>
                   </div>
-                </div>
-              </div>
 
-              {/* Social Media Section */}
-              <div className="bg-white rounded-lg p-4 mb-4 shadow-md">
-                <h2 className="text-lg font-semibold text-[#384959] mb-4">Social Media</h2>
-                <div className="flex justify-center space-x-6">
-                  {Object.entries({
-                    instagram: userProfile.socials.instagram,
-                    tiktok: userProfile.socials.tiktok,
-                    snapchat: userProfile.socials.snapchat,
-                    twitter: userProfile.socials.twitter,
-                    discord: userProfile.socials.discord
-                  }).map(([platform, handle]) => (
-                    <SocialIcon key={platform} platform={platform} handle={handle} />
-                  ))}
-                </div>
-              </div>
+                  {/* Email Section (New) */}
+                  {userProfile.email && (
+                    <div className="text-[#384959] mb-2">
+                      <p>{userProfile.email}</p>
+                    </div>
+                  )}
 
-              {/* About Me Section */}
-              <div className="bg-white rounded-lg p-4 mb-4 shadow-md">
-                <h2 className="text-lg font-semibold text-[#384959] mb-2">About Me</h2>
-                <p className="text-[#6A89A7]">{userProfile.aboutMe}</p>
-              </div>
+                  {/* Location and Year Section */}
+                  <div className="text-[#384959] mb-6">
+                    <p>{userProfile.location || 'Location'} • {userProfile.year || 'Year'}</p>
+                  </div>
 
-              {/* Skill Demo Section */}
-              {renderSkillDemo()}
+                  {/* Skills Section */}
+                  <div className="bg-white rounded-lg p-4 mb-4 shadow-md">
+                    {/* Teaching Skills */}
+                    <div className="mb-4">
+                      <h2 className="text-lg font-semibold text-[#384959] mb-2">Teaching</h2>
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        {userProfile.skillsTeaching && userProfile.skillsTeaching.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="bg-[#6A89A7] text-white px-3 py-1 rounded-full text-sm"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Learning Skills */}
+                    <div>
+                      <h2 className="text-lg font-semibold text-[#384959] mb-2">Learning</h2>
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        {userProfile.skillsLearning && userProfile.skillsLearning.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="bg-[#BDDDFC] text-[#384959] px-3 py-1 rounded-full text-sm"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Social Media Section */}
+                  <div className="bg-white rounded-lg p-4 mb-4 shadow-md">
+                    <h2 className="text-lg font-semibold text-[#384959] mb-4">Social Media</h2>
+                    <div className="flex justify-center space-x-6">
+                      {userProfile.socials && Object.entries(userProfile.socials).map(([platform, handle]) => (
+                         handle && <SocialIcon key={platform} platform={platform} handle={handle} />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* About Me Section */}
+                  <div className="bg-white rounded-lg p-4 mb-4 shadow-md">
+                    <h2 className="text-lg font-semibold text-[#384959] mb-2">About Me</h2>
+                    <p className="text-[#6A89A7]">{userProfile.aboutMe || 'Tell us about yourself...'}</p>
+                  </div>
+
+                  {/* Skill Demo Section */}
+                  {userProfile.skillDemo && renderSkillDemo()}
+                </>
+              )}
             </div>
           </div>
         </div>

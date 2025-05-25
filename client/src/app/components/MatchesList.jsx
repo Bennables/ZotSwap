@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 
-export default function MatchesViewer({ currentUserId }) {
+export default function MatchesViewer({ currentUserEmail }) {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/users/${currentUserId}/matches`);
+        const res = await fetch(`http://localhost:4000/api/users/email/${currentUserEmail}/matches`);
+        if (!res.ok) throw new Error('Failed to fetch matches');
         const data = await res.json();
         setMatches(data);
       } catch (err) {
@@ -17,8 +18,8 @@ export default function MatchesViewer({ currentUserId }) {
       }
     };
 
-    if (currentUserId) fetchMatches();
-  }, [currentUserId]);
+    if (currentUserEmail) fetchMatches();
+  }, [currentUserEmail]);
 
   if (loading) return <p className="text-center">Loading matches...</p>;
 
@@ -31,9 +32,15 @@ export default function MatchesViewer({ currentUserId }) {
         matches.map((user) => (
           <div key={user._id} className="border-b py-4">
             <h3 className="text-xl font-semibold">{user.name}</h3>
+uploading
             <p className="text-gray-600"> {user.location || 'Unknown'}</p>
             <p className="text-gray-600"> Wants: {user.skillsWanted || 'None listed'}</p>
             <p className="text-gray-600"> Offers: {user.skillsOffered || 'None listed'}</p>
+            <p className="text-gray-600">{user.location || 'Unknown'}</p>
+            <p className="text-gray-600">Talents: {user.talents || 'None listed'}</p>
+            <p className="text-gray-600">Wants: {user.skillsWanted || 'None listed'}</p>
+            <p className="text-gray-600">Offers: {user.skillsOffered || 'None listed'}</p>
+main
           </div>
         ))
       )}

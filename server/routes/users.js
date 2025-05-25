@@ -5,42 +5,8 @@ const router = express.Router();
 const multer = require('multer');
 const upload = multer(); // memory storage by default
 
-// User Schema - defines the structure of user profiles
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  location: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  year: {
-    type: String,
-    required: true
-  },
-  talents: {
-    type: String,
-    default: ''
-  },
-  skillsWanted: {
-    type: String,
-    default: ''
-  },
-  skillsOffered: {
-    type: String,
-    default: ''
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
-
-// Prevent re-compilation issues
-const User = mongoose.models.User || mongoose.model('User', userSchema);
+// Import the User model
+const User = require('../models/userModel');
 
 // GET /api/users - Fetch all user profiles
 router.get('/', async (req, res) => {
@@ -86,6 +52,7 @@ router.get('/', async (req, res) => {
 // POST /api/users - Create a new user profile
 router.post('/', upload.any(), async (req, res) => {
   try {
+ uploading
     const { name, location, year, talents } = req.body;
     let skillsWanted = JSON.parse(req.body.skillsWanted || '[]');
     skillsWanted= skillsWanted.join(', '); 
@@ -98,39 +65,137 @@ router.post('/', upload.any(), async (req, res) => {
       return res.status(400).json({ error: 'Name, location, and year are required fields' });
     }
 
+    const { 
+      firstName,
+      lastName,
+      age,
+      location,
+      year,
+      talents,
+      skillsWanted, // Should be an array
+      skillsOffered, // Should be an array
+      instagram,
+      snapchat,
+      tiktok,
+      discord,
+      twitter,
+      phone, // Assuming phone is part of signup form now
+      email, // Assuming email is part of signup form now
+      password // <-- Add password here
+    } = req.body;
+    
+    // Validation
+    if (!firstName || !lastName || !age || !location || !year || !email) {
+      return res.status(400).json({ 
+        error: 'First name, last name, age, location, year, and email are required fields' 
+      });
+    }
+    
+    // Combine first and last name for the 'name' field (if you still need it, otherwise remove 'name' from model/schema)
+    // Assuming 'name' is no longer needed based on model update, using firstName and lastName instead.
+ main
+
     const newUser = new User({
-      name: name.trim(),
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      age: age,
       location: location.trim(),
       year: year.trim(),
       talents: talents || '',
+ uploading
       skillsWanted:skillsWanted, // Convert back to string
       skillsOffered: skillsOffered, // Convert back to string
+
+      skillsWanted: skillsWanted || [], // Ensure it's an array
+      skillsOffered: skillsOffered || [], // Ensure it's an array
+      instagram: instagram || '',
+      snapchat: snapchat || '',
+      tiktok: tiktok || '',
+      discord: discord || '',
+      twitter: twitter || '',
+      phone: phone || '',
+      email: email.trim(),
+      password: password // <-- Add password here
+ main
     });
     
+    // We should hash the password before saving
+    await newUser.setPassword(password);
+
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    // Do not send password back in response
+    const userResponse = savedUser.toObject();
+    delete userResponse.password;
+
+    res.status(201).json(userResponse);
   } catch (error) {
     console.error('Error creating user:', error);
+    // Check for duplicate key error (e.g., email unique constraint)
+    if (error.code === 11000) {
+      return res.status(409).json({ error: 'Email or phone number already exists' });
+    }
     res.status(500).json({ error: 'Failed to create user profile' });
   }
 });
 
+ uploading
+
+// GET /api/users/me - Fetch the currently authenticated user's profile using email in header
+router.get('/me', async (req, res) => {
+  // Use email from a custom header for authentication (simplified)
+  const userEmail = req.headers['x-user-email']; // Read email from X-User-Email header
+
+  if (!userEmail) {
+    return res.status(401).json({ error: 'Unauthorized: Email header missing' });
+  }
+
+  try {
+    const user = await User.findOne({ email: userEmail }); // Find user by email
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found with provided email' });
+    }
+    
+    // Return the user profile data
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user profile by email:', error);
+    res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
+ main
 
 // GET /api/users/:id - Get a specific user by ID
+// NOTE: This route might be redundant if /me is used for the current user
+// but keeping it in case fetching other users by ID is needed.
 router.get('/:id', async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id); // Fetch user by ID from URL parameter
     
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
     
+    // Return the user profile data
     res.json(user);
   } catch (error) {
-    console.error('Error fetching user:', error);
+    console.error('Error fetching user profile by ID:', error);
     res.status(500).json({ error: 'Failed to fetch user profile' });
   }
 });
+
+// GET /api/users/:id - Get a specific user by ID
+router.get('/email/:email/matches', async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.params.email }).populate('matches');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    res.json(user.matches);
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 // Like a user
 router.post('/like', async (req, res) => {

@@ -76,5 +76,12 @@ UserSchema.methods.validatePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
+<<<<<<< HEAD
 // ✅ Safe export to prevent OverwriteModelError
 module.exports = mongoose.models.User || mongoose.model('User', UserSchema);
+=======
+// Only compile model if it hasn't been compiled before
+const User = mongoose.models.User || mongoose.model('User', UserSchema);
+
+module.exports = User;
+>>>>>>> main

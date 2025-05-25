@@ -3,13 +3,7 @@
     color:red;
 }
 .box{
-    color: green;
-    background-color:orange;
+    background: green;
     height:800px;
-    width: 100%;
-}
-main{
-    background-color:black;
-
     width: 100%;
 }

@@ -7,6 +7,7 @@ import ProfileViewer from './components/ProfileViewer';
 import SignUp from './components/SignUp'
 
 export default function Home() {
+  // const router = useRouter();
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
       {/* Navigation Header */}
@@ -69,3 +70,13 @@ export default function Home() {
     </main>
   );
 }
+
+
+// const App = () => {
+//   return(
+//     <div>
+
+//       <h1>HELOO</h1>
+//     </div>
+//   )
+// }

@@ -4,27 +4,35 @@ import { createContext, useState, useEffect } from 'react';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [email, setEmail] = useState(null);
+  const [userEmail, setUserEmailState] = useState(null);
+  // Add state for loading initial email from localStorage
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
-    const savedEmail = localStorage.getItem('loggedInEmail');
-    if (savedEmail) setEmail(savedEmail);
+    // This effect runs only on the client-side after initial render
+    const savedEmail = localStorage.getItem('userEmail'); // Use consistent key
+    if (savedEmail) {
+      setUserEmailState(savedEmail);
+    }
+    setIsInitialLoad(false); // Mark initial load as complete
   }, []);
 
-  // Add your login function here
-  const login = async (email, password) => {
-    // Example: mock login logic (replace with real API call)
-    if (email && password) {
-      // Save login status locally
-      localStorage.setItem('loggedInEmail', email);
-      setEmail(email);
-      return true;  // success
+  // Function to set user email and update localStorage
+  const setUserEmail = (email) => {
+    setUserEmailState(email);
+    if (email) {
+      localStorage.setItem('userEmail', email);
+    } else {
+      localStorage.removeItem('userEmail');
     }
-    return false;  // fail
   };
 
+  // We can keep the placeholder login or remove it if authentication is handled elsewhere
+  // Removing placeholder login for now to focus on email state management
+  // const login = async (email, password) => { ... };
+
   return (
-    <AuthContext.Provider value={{ email, setEmail, login }}>
+    <AuthContext.Provider value={{ userEmail, setUserEmail, isInitialLoad }}>
       {children}
     </AuthContext.Provider>
   );

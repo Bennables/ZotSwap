@@ -24,6 +24,8 @@ export default function Home() {
     setError('');
 
     try {
+      console.log('Attempting login with identifier:', identifier);
+      
       const response = await fetch('http://localhost:4000/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -31,21 +33,40 @@ export default function Home() {
       });
 
       const data = await response.json();
+      console.log('Full login response:', data);
 
       if (!response.ok) {
         throw new Error(data.error || 'Sign in failed');
       }
 
-      // Assuming the backend returns a token and user info on successful login
-      console.log('Login successful. Backend response:', data);
-      localStorage.setItem('token', data.token); // Store the token (placeholder)
+      // Check if we have the user ID in the response
+      if (!data.user || !data.user.id) {
+        console.error('No user ID in response:', data);
+        throw new Error('Login response missing user ID');
+      }
+
+      // Store both token and user ID in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.user.id);
+      
+      // Set user email in context
       setUserEmail(data.user.email);
-      console.log('Stored token in localStorage:', data.token);
-      console.log('Stored userEmail using AuthContext:', data.user.email);
+      
+      console.log('Login successful. Stored user ID:', data.user.id);
+      console.log('Stored token:', data.token);
+      console.log('Stored userEmail:', data.user.email);
+      
+      // Verify the data was stored
+      console.log('Verifying localStorage:', {
+        userId: localStorage.getItem('userId'),
+        token: localStorage.getItem('token')
+      });
+      
       // Redirect to the main app page
-      router.push('/swipe'); // Navigate to the swipe page
+      router.push('/swipe');
 
     } catch (err) {
+      console.error('Login error:', err);
       setError(err.message);
     } finally {
       setLoading(false);

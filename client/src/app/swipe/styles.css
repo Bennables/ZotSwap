@@ -7,3 +7,11 @@
     height:800px;
     width: 100%;
 }
+
+.swipeable-card.swiped-right {
+  background-color: #8FBC8F !important; /* Muted Green */
+}
+
+.swipeable-card.swiped-left {
+  background-color: #CD5C5C !important; /* Muted Red */
+}

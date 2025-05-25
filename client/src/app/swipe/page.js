@@ -10,7 +10,6 @@ const App = () => {
 
   return (
     <div>
-      <h2>Swipe the Card</h2>
       {isInitialLoad ? (
         <p>Loading user info...</p>
       ) : userEmail ? (

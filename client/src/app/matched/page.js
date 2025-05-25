@@ -1,27 +1,28 @@
-import "./style.css"
+'use client';
 
-export default function Main() {
-  const chats = [
-    { id: 1, name: "Alice", lastMessage: "Hey!", time: "3:07 PM" },
-    { id: 2, name: "Bob", lastMessage: "What's up?", time: "2:38 PM" },
-    { id: 3, name: "Charlie", lastMessage: "Let's meet.", time: "10:33 AM" }
+import './style.css';
+import Navbar from '../components/NavigationBar';
+import Matches from '../components/MatchesList';
+
+export default function MatchesPage() {
+  const matches = [
+    { id: 1, name: "Jessica", teach: "Math", learn: "Guitar", status: "Matched 2h ago" },
+    { id: 2, name: "Daniel", teach: "Programming", learn: "Spanish", status: "Matched 1d ago" },
+    { id: 3, name: "Emily", teach: "Cooking", learn: "Yoga", status: "Matched 3d ago" }
   ];
 
   return (
     <main>
       <div className="top">
-        <h1>Messaging</h1>
+        <h1>Matches</h1>
       </div>
 
       <div className="body">
-        {chats.map((chat) => (
-          <div key={chat.id} className="message-slot">
-            <div className="name">{chat.name}</div>
-            <div className="time"><h3>Teach this <br/> Learn this</h3></div>
-            <div className="preview">{chat.lastMessage}</div>
-          </div>
-        ))}
+        <Matches />
       </div>
+
+      <Navbar />
     </main>
   );
 }
+

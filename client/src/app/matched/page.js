@@ -3,13 +3,22 @@
 import './style.css';
 import Navbar from '../components/NavigationBar';
 import Matches from '../components/MatchesList';
+import { useContext } from 'react';
+import { AuthContext } from '../context/authContext';
 
 export default function MatchesPage() {
-  const matches = [
-    { id: 1, name: "Jessica", teach: "Math", learn: "Guitar", status: "Matched 2h ago" },
-    { id: 2, name: "Daniel", teach: "Programming", learn: "Spanish", status: "Matched 1d ago" },
-    { id: 3, name: "Emily", teach: "Cooking", learn: "Yoga", status: "Matched 3d ago" }
-  ];
+  const { email } = useContext(AuthContext);
+
+  if (!email) {
+    return (
+      <main>
+        <div className="top">
+          <h1>Please log in to see your matches</h1>
+        </div>
+        <Navbar />
+      </main>
+    );
+  }
 
   return (
     <main>
@@ -18,11 +27,13 @@ export default function MatchesPage() {
       </div>
 
       <div className="body">
-        <Matches />
+        {/* Pass email to Matches so it can fetch matches for the logged-in user */}
+        <Matches currentUserEmail={email} />
       </div>
 
       <Navbar />
     </main>
   );
 }
+
 

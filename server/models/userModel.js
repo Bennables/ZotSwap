@@ -3,14 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
   // Authentication and identity fields
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    minlength: 3,
-    maxlength: 20,
-    trim: true,
-  },
+
   email: {
     type: String,
     required: true,
@@ -44,15 +37,24 @@ const UserSchema = new mongoose.Schema({
   },
 
   // Profile info
-  name: String,
+  firstName: String,
+  lastName: String,
   age: Number,
   profilePicture: String,
   year: String,
   location: String,
   talents: String,
-  socials: String,
-  skillsWanted: String,
-  skillsOffered: String,
+  instagram: String,
+  snapchat: String,
+  tiktok: String,
+  discord: String,
+  twitter: String,
+  skillsWanted: [String],
+  skillsOffered: [String],
+
+  likesSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  likesReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 
   // Ratings
   ratingSum: {

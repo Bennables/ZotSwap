@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './page.module.css';
@@ -10,74 +11,30 @@ import Navbar from './components/NavigationBar';
 export default function Home() {
   // const router = useRouter();
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white flex justify-center">
-      <div className="w-[393px] bg-white shadow-md">
-        {/* Navigation Header */}
-        <nav className="p-4 bg-white shadow-md">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold text-blue-600">
-              ZotSwap
-            </Link>
-            <div className="space-x-4">
-              <Link href="/profile" className="text-gray-600 hover:text-blue-600">
-                Profile
-              </Link>
-              <Link href="/auth/login" className="text-gray-600 hover:text-blue-600">
-                Login
-              </Link>
-            </div>
-          </div>
-        </nav>
-
-        {/* Hero Section */}
-        <div className="py-10 px-4">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">
-              Welcome to ZotSwap
-            </h1>
-            <p className="text-md text-gray-600 mb-8">
-              Connect with UCI students, share skills, and make new friends
-            </p>
-            <Link 
-              href="/auth/signup" 
-              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
-            >
-              Get Started
-            </Link>
-          </div>
-
-          {/* Features Grid */}
-          <div className="grid gap-6 mt-12">
-            <div className="p-4 bg-white rounded-lg shadow-md">
-              <h2 className="text-lg font-semibold mb-2">Learn New Skills</h2>
-              <p className="text-gray-600 text-sm">
-                Discover and learn new skills from fellow UCI students
-              </p>
-            </div>
-            <div className="p-4 bg-white rounded-lg shadow-md">
-              <h2 className="text-lg font-semibold mb-2">Share Your Expertise</h2>
-              <p className="text-gray-600 text-sm">
-                Teach others and develop your teaching abilities
-              </p>
-            </div>
-            <div className="p-4 bg-white rounded-lg shadow-md">
-              <Navbar />
-            </div>
-          </div>
+    
+<main className="min-h-screen flex items-center justify-center bg-[#BDDFDC]">
+      <div className="w-full max-w-md p-8 rounded-3xl shadow-lg bg-white border border-[#6A89A7] flex flex-col items-center">
+        <h1 className="text-2xl font-bold text-[#384959] mb-8 mt-2 text-center">Welcome to ZotSwap!</h1>
+        <button className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#BDDFDC] hover:bg-[#88BDF2] transition">Sign In with UCINETID</button>
+        <button className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#BDDFDC] hover:bg-[#88BDF2] transition">Sign In with Google</button>
+        <button className="w-full py-3 mb-6 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#BDDFDC] hover:bg-[#88BDF2] transition">Sign In with Apple</button>
+        <div className="flex items-center w-full mb-4">
+          <div className="flex-grow border-t border-[#6A89A7]" />
+          <span className="mx-2 text-[#384959] text-sm">Do not have an account?</span>
+          <div className="flex-grow border-t border-[#6A89A7]" />
         </div>
+        <button className="w-full py-3 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition">Register</button>
+      </div>
+    </main>
+        </div>
+        <Link href="/profile" className="w-full">
+          <button className="w-full py-3 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition">
+            Register
+          </button>
+        </Link>
       </div>
       <Link href = "/swipe">hDJFKLJSJDKFKDS</Link>
     </main>
   );
 }
 
-
-
-// const App = () => {
-//   return(
-//     <div>
-
-//       <h1>HELOO</h1>
-//     </div>
-//   )
-// }

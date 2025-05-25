@@ -1,12 +1,12 @@
 {
-  "name": "ZotSwap",
+  "name": "zotswap",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/Bennables/ZotSwap.git",
   "author": "justingrino <jgrino@uci.edu>",
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently -n CLIENT,API -c blue,green \"yarn --cwd client dev\" \"yarn --cwd server start\""
+    "dev": "npx concurrently -n CLIENT,API -c blue,green \"yarn --cwd client dev\" \"yarn --cwd server start\""
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

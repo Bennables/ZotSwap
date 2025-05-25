@@ -80,3 +80,6 @@ UserSchema.methods.validatePassword = async function (password) {
 const User = mongoose.models.User || mongoose.model('User', UserSchema);
 
 module.exports = User;
+
+const People = model('People', UserSchema);
+export default People;

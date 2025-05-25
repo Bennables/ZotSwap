@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
+// At the top of your route file
+const multer = require('multer');
+const upload = multer(); // memory storage by default
 
 // Import the User model
 const User = require('../models/userModel');
@@ -17,7 +20,6 @@ router.get('/', async (req, res) => {
           name: "Alex Johnson",
           location: "San Francisco, CA",
           year: "Junior",
-          talents: "Web Development, Guitar",
           skillsWanted: "Machine Learning, Data Science",
           skillsOffered: "React, Node.js, JavaScript"
         },
@@ -25,7 +27,6 @@ router.get('/', async (req, res) => {
           name: "Sarah Kim",
           location: "Los Angeles, CA", 
           year: "Senior",
-          talents: "Photography, Design",
           skillsWanted: "Business Strategy, Marketing",
           skillsOffered: "UI/UX Design, Adobe Creative Suite"
         },
@@ -33,7 +34,6 @@ router.get('/', async (req, res) => {
           name: "Mike Chen",
           location: "Seattle, WA",
           year: "Sophomore",
-          talents: "Piano, Math Tutoring",
           skillsWanted: "Programming, Web Design",
           skillsOffered: "Calculus Help, Music Theory"
         }
@@ -50,8 +50,21 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/users - Create a new user profile
-router.post('/', async (req, res) => {
+router.post('/', upload.any(), async (req, res) => {
   try {
+ uploading
+    const { name, location, year, talents } = req.body;
+    let skillsWanted = JSON.parse(req.body.skillsWanted || '[]');
+    skillsWanted= skillsWanted.join(', '); 
+    let skillsOffered = JSON.parse(req.body.skillsOffered || '[]');
+    skillsOffered= skillsOffered.join(', ');  
+    
+    
+
+    if (!name || !location || !year) {
+      return res.status(400).json({ error: 'Name, location, and year are required fields' });
+    }
+
     const { 
       firstName,
       lastName,
@@ -80,6 +93,7 @@ router.post('/', async (req, res) => {
     
     // Combine first and last name for the 'name' field (if you still need it, otherwise remove 'name' from model/schema)
     // Assuming 'name' is no longer needed based on model update, using firstName and lastName instead.
+ main
 
     const newUser = new User({
       firstName: firstName.trim(),
@@ -88,6 +102,10 @@ router.post('/', async (req, res) => {
       location: location.trim(),
       year: year.trim(),
       talents: talents || '',
+ uploading
+      skillsWanted:skillsWanted, // Convert back to string
+      skillsOffered: skillsOffered, // Convert back to string
+
       skillsWanted: skillsWanted || [], // Ensure it's an array
       skillsOffered: skillsOffered || [], // Ensure it's an array
       instagram: instagram || '',
@@ -98,6 +116,7 @@ router.post('/', async (req, res) => {
       phone: phone || '',
       email: email.trim(),
       password: password // <-- Add password here
+ main
     });
     
     // We should hash the password before saving
@@ -118,6 +137,8 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to create user profile' });
   }
 });
+
+ uploading
 
 // GET /api/users/me - Fetch the currently authenticated user's profile using email in header
 router.get('/me', async (req, res) => {
@@ -142,6 +163,7 @@ router.get('/me', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch user profile' });
   }
 });
+ main
 
 // GET /api/users/:id - Get a specific user by ID
 // NOTE: This route might be redundant if /me is used for the current user

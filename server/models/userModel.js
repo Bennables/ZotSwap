@@ -43,6 +43,12 @@ const UserSchema = new mongoose.Schema({
   profilePicture: String,
   year: String,
   location: String,
+
+  uploading
+  socials: String,
+  skillsWanted: String,
+  skillsOffered: String,
+
   talents: String,
   instagram: String,
   snapchat: String,
@@ -55,6 +61,7 @@ const UserSchema = new mongoose.Schema({
   likesSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   likesReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+main
 
   // Ratings
   ratingSum: {

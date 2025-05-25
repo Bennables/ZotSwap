@@ -9,10 +9,13 @@
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "debug": "~4.3.4",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.5.0",
+    "env": "^0.0.2",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.16.0",
     "mongoose": "^8.3.0",
-    "morgan": "~1.10.0"
+    "morgan": "~1.10.0",
+    "start": "^5.1.0"
   }
 }

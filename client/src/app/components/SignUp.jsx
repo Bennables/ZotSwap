@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const yearOptions = [
   '1st',
@@ -71,6 +72,8 @@ export default function SignUp() {
   const [imagePreview, setImagePreview] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [skillsError, setSkillsError] = useState('');
+
+  const router = useRouter();
 
   // Progress values for each step (now 6 steps)
   const stepProgress = [Math.round((1/6)*100), Math.round((2/6)*100), Math.round((3/6)*100), Math.round((4/6)*100), Math.round((5/6)*100), 100];
@@ -264,7 +267,11 @@ export default function SignUp() {
               >
                 Back
               </button>
-              <button className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition">Start Swapping</button>
+              <button className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition" onClick={() => {
+                console.log('Start Swapping button clicked');
+                router.push('/swipe');
+                console.log('Navigating to /swipe');
+              }}>Start Swapping</button>
             </div>
           </div>
         ) : step === 5 ? (

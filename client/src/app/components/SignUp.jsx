@@ -190,11 +190,13 @@ export default function SignUp() {
     if (step === 4) {
       setStep(5);
       setProgress(stepProgress[4]);
+      console.log("made it to steop 4");
       return;
     }
     if (step === 5) {
       setStep(6);
       setProgress(stepProgress[5]);
+      console.log("made it to step 5");
       return;
     }
 
@@ -203,6 +205,7 @@ export default function SignUp() {
 
   if (step === 6) {
     setLoading(true);
+    console.log("SETOP 66666");
     try {
       const payload = new FormData();
 

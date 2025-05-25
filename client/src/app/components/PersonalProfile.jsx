@@ -2,10 +2,47 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { FaInstagram, FaTiktok, FaSnapchat, FaTwitter, FaDiscord, FaCog } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import { 
+  FaInstagram, FaTiktok, FaSnapchat, FaTwitter, FaDiscord, 
+  FaCog, FaEdit, FaSignOutAlt, FaUserCog 
+} from 'react-icons/fa';
+import DefaultAvatar from './DefaultAvatar';
 
-// Default profile image path - used when user hasn't uploaded their own image
-const DEFAULT_PROFILE_IMAGE = '/images/temporary-profile-picture.jpg';
+// Update the default image constant
+const DEFAULT_PROFILE_IMAGE = '/images/default-avatar.png';
+
+/**
+ * Reusable ProfileSection Component - Renders a section of the profile
+ * @param {string} title - The title of the section
+ * @param {JSX.Element} children - The content of the section
+ * @param {string} className - Additional classes for customization
+ * @returns {JSX.Element} A styled profile section
+ */
+const ProfileSection = ({ title, children, className = "" }) => (
+  <div className={`bg-white rounded-lg p-4 mb-4 shadow-md hover:shadow-lg transition-shadow ${className}`}>
+    <h2 className="text-lg font-semibold text-[#384959] mb-2">{title}</h2>
+    {children}
+  </div>
+);
+
+/**
+ * SkillTag Component - Renders a tag for a skill
+ * @param {string} skill - The skill to display
+ * @param {string} type - The type of skill (teaching or learning)
+ * @returns {JSX.Element} A styled tag for the skill
+ */
+const SkillTag = ({ skill, type = "teaching" }) => (
+  <span className={`
+    px-3 py-1 rounded-full text-sm
+    transition-all duration-200 hover:scale-105
+    ${type === "teaching" 
+      ? "bg-[#6A89A7] text-white hover:bg-[#88BDF2]" 
+      : "bg-[#BDDDFC] text-[#384959] hover:bg-[#88BDF2]/70"}
+  `}>
+    {skill}
+  </span>
+);
 
 /**
  * SocialIcon Component - Renders social media icons with links
@@ -28,9 +65,12 @@ const SocialIcon = ({ platform, handle }) => {
       href={handle ? `https://${platform}.com/${handle}` : '#'} 
       target={handle ? "_blank" : "_self"}
       rel="noopener noreferrer"
-      className={`transition-colors ${handle 
-        ? "text-[#6A89A7] hover:text-[#384959]" 
-        : "text-gray-300 cursor-not-allowed"}`}
+      className={`
+        transition-all duration-200 
+        ${handle 
+          ? "text-[#6A89A7] hover:text-[#384959] hover:scale-110" 
+          : "text-gray-300 cursor-not-allowed"}
+      `}
       onClick={e => !handle && e.preventDefault()}
     >
       {icons[platform]}
@@ -44,6 +84,8 @@ const SocialIcon = ({ platform, handle }) => {
  * @returns {JSX.Element} The complete profile page
  */
 export default function PersonalProfile() {
+  const router = useRouter();
+  const [showMenu, setShowMenu] = useState(false);
   // User profile data state
   const [userProfile] = useState({
     name: "John Doe",
@@ -69,6 +111,28 @@ export default function PersonalProfile() {
     }
   });
 
+  // Settings menu options
+  const menuOptions = [
+    { 
+      icon: <FaEdit />, 
+      label: 'Edit Profile',
+      action: () => router.push('/profile/edit')
+    },
+    { 
+      icon: <FaUserCog />, 
+      label: 'Account Settings',
+      action: () => router.push('/profile/settings')
+    },
+    { 
+      icon: <FaSignOutAlt />, 
+      label: 'Sign Out',
+      action: () => {
+        // Add any cleanup logic here (clear tokens, etc.)
+        router.push('/');
+      }
+    }
+  ];
+
   /**
    * Renders the skill demonstration section if available
    * @returns {JSX.Element|null} Skill demo section or null if no demo exists
@@ -88,9 +152,11 @@ export default function PersonalProfile() {
             src={userProfile.skillDemo.url}
           />
         ) : (
-          <img 
+          <Image
             src={userProfile.skillDemo.url}
             alt="Skill demonstration"
+            width={350}
+            height={200}
             className="w-full rounded-lg"
           />
         )}
@@ -107,87 +173,100 @@ export default function PersonalProfile() {
           <div className="p-4">
             {/* Profile content wrapper */}
             <div className="mt-8 text-center relative">
-              {/* Settings button - positioned absolutely */}
-              <button className="absolute right-0 top-0 bg-[#384959] p-2 rounded-full z-10">
-                <FaCog className="w-6 h-6 text-white" />
-              </button>
+              {/* Settings Menu */}
+              <div className="absolute right-4 top-4 z-20"> {/* Updated positioning */}
+                <button 
+                  onClick={() => setShowMenu(!showMenu)}
+                  className="bg-[#384959] p-2.5 rounded-full hover:bg-[#6A89A7] 
+                    transition-colors duration-200 shadow-md hover:shadow-lg"
+                >
+                  <FaCog className="w-5 h-5 text-white" />
+                </button>
+                
+                {/* Dropdown Menu */}
+                {showMenu && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div className="py-1" role="menu">
+                      {menuOptions.map((option, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            option.action();
+                            setShowMenu(false);
+                          }}
+                          className="w-full px-4 py-2 text-sm text-[#384959] hover:bg-[#BDDDFC] flex items-center gap-2"
+                        >
+                          {option.icon}
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
 
-              {/* Profile Picture Section */}
-              <div className="relative w-32 h-32 mx-auto mb-4">
-                <Image
-                  src={userProfile.profilePicture}
-                  alt="Profile"
-                  layout="fill"
-                  className="rounded-full object-cover"
-                  priority
-                />
-              </div>
-              
-              {/* Name and Age Section */}
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <h1 className="text-2xl font-bold text-[#384959]">{userProfile.name}</h1>
-                <span className="text-lg text-[#6A89A7]">{userProfile.age}</span>
-              </div>
-
-              {/* Location and Year Section */}
-              <div className="text-[#384959] mb-6">
-                <p>{userProfile.location} • {userProfile.year}</p>
-              </div>
+              {/* Profile Content */}
+              <ProfileSection className="relative">
+                {userProfile.profilePicture ? (
+                  <Image
+                    src={userProfile.profilePicture}
+                    alt="Profile"
+                    width={128}
+                    height={128}
+                    className="rounded-full mx-auto mb-4 border-4 border-[#6A89A7]"
+                    priority
+                    onError={() => {
+                      return <DefaultAvatar className="w-32 h-32 mx-auto mb-4" />;
+                    }}
+                  />
+                ) : (
+                  <div className="mx-auto mb-4">
+                    <DefaultAvatar />
+                  </div>
+                )}
+                
+                <h1 className="text-2xl font-bold text-[#384959]">
+                  {userProfile.name}
+                  <span className="text-lg text-[#6A89A7] ml-2">{userProfile.age}</span>
+                </h1>
+                
+                <p className="text-[#384959] mt-2">
+                  {userProfile.location} • {userProfile.year}
+                </p>
+              </ProfileSection>
 
               {/* Skills Section */}
-              <div className="bg-white rounded-lg p-4 mb-4 shadow-md">
-                {/* Teaching Skills */}
-                <div className="mb-4">
-                  <h2 className="text-lg font-semibold text-[#384959] mb-2">Teaching</h2>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {userProfile.skillsTeaching.map((skill, index) => (
-                      <span 
-                        key={index}
-                        className="bg-[#6A89A7] text-white px-3 py-1 rounded-full text-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
+              <ProfileSection title="Teaching">
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {userProfile.skillsTeaching.map((skill, index) => (
+                    <SkillTag key={index} skill={skill} type="teaching" />
+                  ))}
                 </div>
+              </ProfileSection>
 
-                {/* Learning Skills */}
-                <div>
-                  <h2 className="text-lg font-semibold text-[#384959] mb-2">Learning</h2>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {userProfile.skillsLearning.map((skill, index) => (
-                      <span 
-                        key={index}
-                        className="bg-[#BDDDFC] text-[#384959] px-3 py-1 rounded-full text-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
+              <ProfileSection title="Learning">
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {userProfile.skillsLearning.map((skill, index) => (
+                    <SkillTag key={index} skill={skill} type="learning" />
+                  ))}
                 </div>
-              </div>
+              </ProfileSection>
 
               {/* Social Media Section */}
-              <div className="bg-white rounded-lg p-4 mb-4 shadow-md">
-                <h2 className="text-lg font-semibold text-[#384959] mb-4">Social Media</h2>
+              <ProfileSection title="Social Media">
                 <div className="flex justify-center space-x-6">
-                  {Object.entries({
-                    instagram: userProfile.socials.instagram,
-                    tiktok: userProfile.socials.tiktok,
-                    snapchat: userProfile.socials.snapchat,
-                    twitter: userProfile.socials.twitter,
-                    discord: userProfile.socials.discord
-                  }).map(([platform, handle]) => (
+                  {Object.entries(userProfile.socials).map(([platform, handle]) => (
                     <SocialIcon key={platform} platform={platform} handle={handle} />
                   ))}
                 </div>
-              </div>
+              </ProfileSection>
 
               {/* About Me Section */}
-              <div className="bg-white rounded-lg p-4 mb-4 shadow-md">
-                <h2 className="text-lg font-semibold text-[#384959] mb-2">About Me</h2>
-                <p className="text-[#6A89A7]">{userProfile.aboutMe}</p>
-              </div>
+              <ProfileSection title="About Me">
+                <p className="text-[#6A89A7] leading-relaxed">
+                  {userProfile.aboutMe}
+                </p>
+              </ProfileSection>
 
               {/* Skill Demo Section */}
               {renderSkillDemo()}

@@ -1,13 +1,44 @@
 'use client';
+<<<<<<< HEAD
+import Image from 'next/image'
+import styles from './page.module.css'
+import Link from "next/link"
+
+
+=======
 
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './page.module.css';
 import ProfileViewer from './components/ProfileViewer';
 import SignUp from './components/SignUp'
+>>>>>>> main
 
 export default function Home() {
+  // const router = useRouter();
   return (
+<<<<<<< HEAD
+    
+    <main className="container">
+      {/* header button container divider register */}
+      <div className = "container">
+        <br/>
+      <h2 className = "zotswap-header" >Zotswap</h2>
+
+      <h3>Sign In</h3>
+      <button className = 'button'>Sign in with UCINETID</button>
+      <button className = 'button'>Sign in with Google</button>
+      <button className = 'button'>Sign in with Apple</button>
+      <br/> 
+      <h3 className = "divider">Don't have an account?</h3>
+
+      <Link href="/swipe">TO THE PROGRAM</Link>
+      {/* <button className = 'button' onClick={Register}</button> */}
+      </div>
+    </main>
+
+  )
+=======
     <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
       {/* Navigation Header */}
       <nav className="p-4 bg-white shadow-md">
@@ -67,4 +98,15 @@ export default function Home() {
       </div>
     </main>
   );
+>>>>>>> main
 }
+
+
+// const App = () => {
+//   return(
+//     <div>
+
+//       <h1>HELOO</h1>
+//     </div>
+//   )
+// }

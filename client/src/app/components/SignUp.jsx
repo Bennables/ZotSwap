@@ -37,6 +37,8 @@ function formatPhoneNumber(value) {
   return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
 }
 
+
+
 export default function SignUp() {
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(20);
@@ -72,6 +74,39 @@ export default function SignUp() {
   const [imagePreview, setImagePreview] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [skillsError, setSkillsError] = useState('');
+  const upload = async () => {
+  try {
+      const payload = new FormData();
+
+      // Append basic fields
+      Object.entries(form).forEach(([key, value]) => {
+        if (key === 'video' || key === 'image') {
+          if (value) payload.append(key, value);
+        } else if (Array.isArray(value)) {
+          value.forEach((item, index) => {
+            payload.append(`${key}[${index}]`, item);
+          });
+        } else {
+          payload.append(key, value);
+        }
+      });
+      const response = await fetch('http://localhost:4000', {
+        method: 'POST',
+        body: payload,
+      });
+
+      if (!response.ok) throw new Error('Failed to submit');
+      
+      const data = await response.json();
+      console.log('Success:', data);
+    }
+    catch (err) {
+      setError('Submission failed');
+    } finally {
+      setLoading(false);
+    }
+
+  };
 
   // Progress values for each step (now 6 steps)
   const stepProgress = [Math.round((1/6)*100), Math.round((2/6)*100), Math.round((3/6)*100), Math.round((4/6)*100), Math.round((5/6)*100), 100];
@@ -185,18 +220,20 @@ export default function SignUp() {
       setSkillsError('');
       setStep(4);
       setProgress(stepProgress[3]);
+      console.log("made it to steop 4");
       return;
     }
     if (step === 4) {
       setStep(5);
       setProgress(stepProgress[4]);
-      console.log("made it to steop 4");
+      console.log("made it to steop 5");
       return;
     }
     if (step === 5) {
       setStep(6);
+      console.log("made it to step 6");
       setProgress(stepProgress[5]);
-      console.log("made it to step 5");
+      upload();
       return;
     }
 
@@ -206,41 +243,14 @@ export default function SignUp() {
   if (step === 6) {
     setLoading(true);
     console.log("SETOP 66666");
-    try {
-      const payload = new FormData();
-
-      // Append basic fields
-      Object.entries(form).forEach(([key, value]) => {
-        if (key === 'video' || key === 'image') {
-          if (value) payload.append(key, value);
-        } else if (Array.isArray(value)) {
-          value.forEach((item, index) => {
-            payload.append(`${key}[${index}]`, item);
-          });
-        } else {
-          payload.append(key, value);
-        }
-      });
-      const response = await fetch('http://localhost:4000/api/signup', {
-        method: 'POST',
-        body: payload,
-      });
-
-      if (!response.ok) throw new Error('Failed to submit');
-      
-      const data = await response.json();
-      console.log('Success:', data);
-
-      setSuccess(true);
-      setProgress(100);
-      setFinished(true);
-    } catch (err) {
-      setError('Submission failed');
-    } finally {
-      setLoading(false);
-    }
+    
+    setSuccess(true);
+    setProgress(100);
+    setFinished(true);
+    
     return;
-    };
+  }
+    
   };
 
   // Add skip for now for talents showcase
@@ -377,7 +387,9 @@ export default function SignUp() {
                 className="flex-1 py-3 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition flex items-center justify-center disabled:opacity-50"
                 onClick={() => {
                   setFinished(true);
+                  upload();
                   setProgress(100);
+
                 }}
                 type="button"
                 disabled={loading}
@@ -643,4 +655,4 @@ export default function SignUp() {
       </div>
     </div>
   );
-}
+};

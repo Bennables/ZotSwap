@@ -74,9 +74,20 @@ export default function Home() {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center bg-gray-100 p-4">
+    <div className="fixed inset-0 flex justify-center items-center bg-[#BDDDFC] p-4">
       <div className="w-full max-w-md bg-[#F7FAFC] rounded-3xl shadow-lg border border-[#6A89A7] flex flex-col items-center overflow-hidden md:h-auto">
         <div className="w-full p-8 flex flex-col items-center">
+          {/* ZotSwap Logo */}
+          <div className="mb-8">
+            <Image
+              src="/ZotSwap_Logo1.png" // Updated path based on image location
+              alt="ZotSwap Logo"
+              width={150} // Adjust width as needed
+              height={150} // Adjust height as needed (maintain aspect ratio)
+              priority // Prioritize loading for LCP
+            />
+          </div>
+
           <h1 className="text-2xl font-bold text-[#384959] mb-8 mt-2 text-center">Welcome to ZotSwap!</h1>
 
           <form onSubmit={handleSignIn} className="w-full">

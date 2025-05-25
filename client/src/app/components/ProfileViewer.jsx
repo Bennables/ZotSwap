@@ -48,7 +48,7 @@ export default function ProfileViewer({currentUserId}) {
       <h3 className="text-lg font-bold">
         {user.firstName} {user.lastName} <span className="font-normal">{user.age || ''}</span>
       </h3>
-  
+
       <div className="text-md font-semibold my-2">About Me</div>
   
       <div className="text-md font-semibold mb-1">Skills I have!</div>

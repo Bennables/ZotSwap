@@ -2,6 +2,7 @@
 import './styles.css';
 import Navbar from '../components/NavigationBar';
 import SwipeableCard from './swipeable';
+import Header from '../components/Header';
 import { useContext } from 'react';
 import { AuthContext } from '../context/authContext';
 
@@ -10,13 +11,16 @@ const App = () => {
 
   return (
     <div>
-      {isInitialLoad ? (
-        <p>Loading user info...</p>
-      ) : userEmail ? (
-        <SwipeableCard />
-      ) : (
-        <p>Please log in to view profiles.</p>
-      )}
+      <Header />
+      <div className="pt-16">
+        {isInitialLoad ? (
+          <p>Loading user info...</p>
+        ) : userEmail ? (
+          <SwipeableCard />
+        ) : (
+          <p>Please log in to view profiles.</p>
+        )}
+      </div>
       <Navbar />
     </div>
   );

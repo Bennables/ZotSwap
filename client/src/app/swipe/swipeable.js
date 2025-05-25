@@ -4,6 +4,33 @@ import { useState, useEffect } from 'react';
 import { animate } from 'motion';
 import { useRouter } from 'next/navigation';
 import "./styles.css";
+import { FaInstagram, FaTiktok, FaSnapchat, FaTwitter, FaDiscord } from 'react-icons/fa';
+
+// SocialIcon Component - Renders social media icons with links
+const SocialIcon = ({ platform, handle }) => {
+  // Map of platform names to their respective icons
+  const icons = {
+    instagram: <FaInstagram className="w-6 h-6" />,
+    tiktok: <FaTiktok className="w-6 h-6" />,
+    snapchat: <FaSnapchat className="w-6 h-6" />,
+    twitter: <FaTwitter className="w-6 h-6" />,
+    discord: <FaDiscord className="w-6 h-6" />
+  };
+
+  return (
+    <a 
+      href={handle ? `https://${platform}.com/${handle}` : '#'} 
+      target={handle ? "_blank" : "_self"}
+      rel="noopener noreferrer"
+      className={`transition-colors ${handle 
+        ? "text-[#6A89A7] hover:text-[#384959]" 
+        : "text-gray-300 cursor-not-allowed"}`}
+      onClick={e => !handle && e.preventDefault()}
+    >
+      {icons[platform]}
+    </a>
+  );
+};
 
 export default function SwipeableCard() {
   const [profiles, setProfiles] = useState([]);
@@ -105,37 +132,23 @@ export default function SwipeableCard() {
 
   return (
     <div className="relative h-[852px] w-[393px] mx-auto bg-[#F7FAFC] dark:bg-gray-900">
-      <div {...handlers} className="h-[calc(100%-80px)] w-full overflow-y-auto">
-        <div className="swipeable-card bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 text-center transition-all duration-200 hover:shadow-lg max-w-sm mx-auto">
+      <div {...handlers} className="h-[calc(100%-80px)] w-full flex flex-col">
+        <div className="swipeable-card bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-200 hover:shadow-lg overflow-y-auto min-h-full">
           <div className="relative w-28 h-28 mx-auto mb-6">
             <img
-              src={user.profilePicture || '/images/default-profile.png'}
+              src={user.profilePicture || '/images/default-profile.jpg'}
               className="w-full h-full rounded-full object-cover shadow-md border-4 border-[#6A89A7] dark:border-gray-600"
               alt={`${user.firstName || user.name || 'User'}'s profile`}
             />
           </div>
     
-          <h3 className="text-xl font-bold text-[#384959] dark:text-white mb-2">
+          <h3 className="text-xl font-bold text-[#384959] dark:text-white mb-2 text-center">
             {(user.firstName && user.lastName) ? `${user.firstName} ${user.lastName}` : user.name || 'Name'} 
             {user.age && <span className="font-normal text-[#6A89A7] dark:text-gray-400"> • {user.age}</span>}
           </h3>
 
-          {user.email && (
-            <div className="text-[#6A89A7] dark:text-gray-400 mb-4">
-              <p>{user.email}</p>
-            </div>
-          )}
-
-          <div className="text-[#384959] dark:text-gray-300 mb-6">
+          <div className="text-[#384959] dark:text-gray-300 mb-6 text-center">
             <p>{user.location || 'Location'} • {user.year || 'Year'}</p>
-          </div>
-
-          {/* About Me Section */}
-          <div className="bg-[#F7FAFC] dark:bg-gray-700 rounded-lg p-4 mb-6 hover:shadow-xl transition-shadow duration-200">
-            <h2 className="text-lg font-semibold text-[#384959] dark:text-white mb-3">About Me</h2>
-            <p className="text-[#384959] dark:text-gray-300 text-sm leading-relaxed">
-              {user.bio || "Hi! I'm passionate about learning and sharing skills. I believe in the power of community and collaboration. Let's connect and grow together!"}
-            </p>
           </div>
 
           <div className="space-y-6">
@@ -170,6 +183,27 @@ export default function SwipeableCard() {
                 ))}
               </div>
             </div>
+
+            {/* Social Media Section */}
+            <div className="bg-[#F7FAFC] dark:bg-gray-700 rounded-lg p-4 mb-6 hover:shadow-xl transition-shadow duration-200">
+              <h2 className="text-lg font-semibold text-[#384959] dark:text-white mb-3">Social Media</h2>
+              <div className="flex justify-center space-x-6">
+                {['instagram', 'tiktok', 'snapchat', 'twitter', 'discord'].map(platform => {
+                  const handle = user.socials ? user.socials[platform] : '';
+                  return (
+                    <SocialIcon key={platform} platform={platform} handle={handle} />
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* About Me Section */}
+            <div className="bg-[#F7FAFC] dark:bg-gray-700 rounded-lg p-4 mb-6 hover:shadow-xl transition-shadow duration-200">
+              <h2 className="text-lg font-semibold text-[#384959] dark:text-white mb-3">About Me</h2>
+              <p className="text-[#384959] dark:text-gray-300 text-sm leading-relaxed">
+                {user.bio || "Hi! I'm passionate about learning and sharing skills. I believe in the power of community and collaboration. Let's connect and grow together!"}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -183,7 +217,7 @@ export default function SwipeableCard() {
        <button
          onClick={handleUndo}
          disabled={history.length === 0} // Disable if no history
-         className={`fixed bottom-4 left-4 w-16 h-16 rounded-full bg-[#F7B267] text-[#384959] flex items-center justify-center shadow-lg transition-colors z-50 ${history.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
+         className={`fixed bottom-24 left-4 w-16 h-16 rounded-full bg-[#F7B267] text-[#384959] flex items-center justify-center shadow-lg transition-colors z-50 ${history.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
          aria-label="Undo swipe"
        >
          <span className="text-2xl">↺</span>
@@ -192,3 +226,4 @@ export default function SwipeableCard() {
     </div>
   );
 }
+ 

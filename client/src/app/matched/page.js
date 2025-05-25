@@ -7,9 +7,9 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/authContext';
 
 export default function MatchesPage() {
-  const { email } = useContext(AuthContext);
+  const { userEmail } = useContext(AuthContext);
 
-  if (!email) {
+  if (!userEmail) {
     return (
       <main>
         <div className="top">
@@ -25,10 +25,8 @@ export default function MatchesPage() {
       <div className="top">
         <h1>Matches</h1>
       </div>
-
-      <div className="body">
-        {/* Pass email to Matches so it can fetch matches for the logged-in user */}
-        <Matches currentUserEmail={email} />
+      <div className="pt-16 body">
+        <Matches currentUserEmail={userEmail} />
       </div>
 
       <Navbar />

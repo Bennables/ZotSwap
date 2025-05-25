@@ -5,16 +5,18 @@ import './styles.css'
 import Navbar from '../components/NavigationBar';
 // App.js or page.js
 import SwipeableCard from './Swipeable';
+import Header from '../components/ZotHeader';
 
 const App = () => {
   return (
-    <div>
-    <h2>Swipe the Card</h2>
-    
-      <SwipeableCard content="👋 Swipe Me!" />
-      <Navbar />
-    </div>
-    
+    <main>
+      <div> 
+        <Header />
+      
+        <SwipeableCard content="👋 Swipe Me!" />
+        <Navbar />
+      </div>
+    </main>
   );
 };
 

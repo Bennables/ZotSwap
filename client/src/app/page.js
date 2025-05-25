@@ -7,10 +7,13 @@ import styles from './page.module.css';
 import ProfileViewer from './components/ProfileViewer';
 import SignUp from './components/SignUp';
 import Navbar from './components/NavigationBar';
+import Header from './components/ZotHeader';
 
 export default function Home() {
   return (
+    
     <div className="fixed inset-0 flex justify-center bg-gray-100">
+      
       <div className="w-[393px] h-[852px] relative bg-[#F7FAFC] overflow-hidden">
         <main className="min-h-screen flex items-center justify-center bg-[#F7FAFC] p-4">
           <div className="w-full max-w-md p-8 rounded-3xl shadow-lg bg-[#F7FAFC] border border-[#6A89A7] flex flex-col items-center">

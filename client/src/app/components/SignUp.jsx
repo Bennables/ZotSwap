@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+// import People from '../../server/modelx/userModel.js'
 
 const yearOptions = [
   '1st',
@@ -196,19 +197,47 @@ export default function SignUp() {
       setProgress(stepProgress[5]);
       return;
     }
-    if (step === 6) {
-      setLoading(true);
-      try {
-        setSuccess(true);
-        setProgress(100);
-        setFinished(true);
-      } catch (err) {
-        setError('Submission failed');
-      } finally {
-        setLoading(false);
-      }
-      return;
+
+
+
+
+  if (step === 6) {
+    setLoading(true);
+    try {
+      const payload = new FormData();
+
+      // Append basic fields
+      Object.entries(form).forEach(([key, value]) => {
+        if (key === 'video' || key === 'image') {
+          if (value) payload.append(key, value);
+        } else if (Array.isArray(value)) {
+          value.forEach((item, index) => {
+            payload.append(`${key}[${index}]`, item);
+          });
+        } else {
+          payload.append(key, value);
+        }
+      });
+      const response = await fetch('http://localhost:4000/api/signup', {
+        method: 'POST',
+        body: payload,
+      });
+
+      if (!response.ok) throw new Error('Failed to submit');
+      
+      const data = await response.json();
+      console.log('Success:', data);
+
+      setSuccess(true);
+      setProgress(100);
+      setFinished(true);
+    } catch (err) {
+      setError('Submission failed');
+    } finally {
+      setLoading(false);
     }
+    return;
+    };
   };
 
   // Add skip for now for talents showcase

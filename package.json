@@ -12,7 +12,10 @@
     "concurrently": "^9.1.2"
   },
   "dependencies": {
+    "lucide-react": "^0.511.0",
+    "morgan": "^1.10.0",
     "motion": "^12.12.2",
+    "multer": "^2.0.0",
     "react-native-gesture-handler": "^2.25.0",
     "react-native-reanimated": "^3.17.5",
     "react-swipeable": "^7.0.2",

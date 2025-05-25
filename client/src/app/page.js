@@ -26,15 +26,15 @@ export default function Home() {
         <button className="w-full py-3 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition">Register</button>
       </div>
     </main>
-        </div>
-        <Link href="/profile" className="w-full">
-          <button className="w-full py-3 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition">
-            Register
-          </button>
-        </Link>
-      </div>
-      <Link href = "/swipe">hDJFKLJSJDKFKDS</Link>
-    </main>
+    //     </div>
+    //     <Link href="/profile" className="w-full">
+    //       <button className="w-full py-3 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition">
+    //         Register
+    //       </button>
+    //     </Link>
+    //   </div>
+    //   <Link href = "/swipe">hDJFKLJSJDKFKDS</Link>
+    // </main>
   );
 }
 

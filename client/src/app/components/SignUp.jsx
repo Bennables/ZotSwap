@@ -281,7 +281,7 @@ export default function SignUp() {
                 placeholder="@username"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">📸</span>
+              <img src="/instagram.png" alt="Instagram" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-2 flex items-center">
               <span className="mr-2">Snapchat</span>
@@ -293,7 +293,7 @@ export default function SignUp() {
                 placeholder="@username"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">👻</span>
+              <img src="/snapchat.png" alt="Snapchat" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-2 flex items-center">
               <span className="mr-2">TikTok</span>
@@ -305,7 +305,7 @@ export default function SignUp() {
                 placeholder="@username"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">🎵</span>
+              <img src="/tik-tok.png" alt="TikTok" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-2 flex items-center">
               <span className="mr-2">Discord</span>
@@ -317,7 +317,7 @@ export default function SignUp() {
                 placeholder="username#1234"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">💬</span>
+              <img src="/discord.png" alt="Discord" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-4 flex items-center">
               <span className="mr-2">X (Twitter)</span>
@@ -329,7 +329,7 @@ export default function SignUp() {
                 placeholder="@username"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">🐦</span>
+              <img src="/twitter.png" alt="Twitter" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-2 text-center text-gray-500 text-xs">You can edit this later in your profile.</div>
             <div className="flex w-full gap-2 mt-4">

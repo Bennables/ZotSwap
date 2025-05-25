@@ -46,14 +46,16 @@ const UserSchema = new mongoose.Schema({
   // Define the schema for the User model
   name: String,
   age: Number,
+  profilePicture: String,
   year: String,
   location: String,
   talents: String,
   phone: String,
-  email: String,
+  email: { type: String, required: true, unique: true },
   socials: String,
   skillsWanted: String,
   skillsOffered: String,
+
 
   // Ratings
   ratingSum: {

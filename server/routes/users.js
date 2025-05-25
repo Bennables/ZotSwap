@@ -128,6 +128,36 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Like a user
+router.post('/like', async (req, res) => {
+  const { senderId, receiverId } = req.body;
+
+  try {
+    const sender = await User.findById(senderId);
+    const receiver = await User.findById(receiverId);
+
+    // Add to likesSent and likesReceived
+    if (!sender.likesSent.includes(receiverId)) {
+      sender.likesSent.push(receiverId);
+      receiver.likesReceived.push(senderId);
+    }
+
+    // If receiver already liked sender → it's a match!
+    if (receiver.likesSent.includes(senderId)) {
+      sender.matches.push(receiverId);
+      receiver.matches.push(senderId);
+    }
+
+    await sender.save();
+    await receiver.save();
+
+    res.status(200).json({ message: 'Like processed' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error processing like' });
+  }
+});
+
+
 // PUT /api/users/:id - Update a user profile
 router.put('/:id', async (req, res) => {
   try {

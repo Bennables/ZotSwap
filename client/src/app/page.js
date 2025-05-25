@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-import Image from 'next/image'
-import styles from './page.module.css'
-import Link from 'next/link'
-
-export default function Home() {
-  return (
-    <main className="h-screen flex items-center justify-center">
-      <h1 className="text-3xl font-bold text-red-500">
-        Tailwind on! 🚀
-      </h1>
-
-      <Link href = "/matched">CLICK</Link>
-=======
 'use client';
 
 import Link from 'next/link';
@@ -79,7 +65,6 @@ export default function Home() {
           </div>
         </div>
       </div>
->>>>>>> 51041b10edf2549cc71ac4bf0929416baf2687f7
     </main>
   );
 }

@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useContext, use } from 'react';
+import { useRouter } from 'next/navigation';
+import { AuthContext } from '../context/authContext'; // Add this line
 
 const yearOptions = [
   '1st',
@@ -37,6 +39,8 @@ function formatPhoneNumber(value) {
 }
 
 export default function SignUp() {
+   const router = useRouter();
+ const { setEmail } = useContext(AuthContext);
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(20);
   const [loading, setLoading] = useState(false);
@@ -66,6 +70,7 @@ export default function SignUp() {
     skillInputOffered: '',
     skillInputWanted: '',
     countryCode: '+1',
+    
   });
   const [videoPreview, setVideoPreview] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -80,6 +85,11 @@ export default function SignUp() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+const handleStartSwapping = () => {
+  setEmail(form.email);
+  localStorage.setItem('loggedInEmail', form.email); // Add this line
+  router.push('/swipe');
+};
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     if (!files || files.length === 0) return;
@@ -264,7 +274,13 @@ export default function SignUp() {
               >
                 Back
               </button>
-              <button className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition">Start Swapping</button>
+              <button 
+  className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition"
+  onClick={handleStartSwapping}
+  type="button"
+>
+  Start Swapping
+</button>
             </div>
           </div>
         ) : step === 5 ? (

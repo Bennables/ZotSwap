@@ -1,7 +1,7 @@
 'use client';
 import './styles.css';
 import Navbar from '../components/NavigationBar';
-import SwipeableCard from './Swipeable';
+import SwipeableCard from './swipeable';
 import { useContext } from 'react';
 import { AuthContext } from '../context/authContext';
 

@@ -11,8 +11,20 @@ export const AuthProvider = ({ children }) => {
     if (savedEmail) setEmail(savedEmail);
   }, []);
 
+  // Add your login function here
+  const login = async (email, password) => {
+    // Example: mock login logic (replace with real API call)
+    if (email && password) {
+      // Save login status locally
+      localStorage.setItem('loggedInEmail', email);
+      setEmail(email);
+      return true;  // success
+    }
+    return false;  // fail
+  };
+
   return (
-    <AuthContext.Provider value={{ email, setEmail }}>
+    <AuthContext.Provider value={{ email, setEmail, login }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,11 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
-// At the top of your route file
 const multer = require('multer');
 const upload = multer(); // memory storage by default
 
-// Import the User model
 const User = require('../models/userModel');
 
 // GET /api/users - Fetch all user profiles
@@ -13,32 +11,31 @@ router.get('/', async (req, res) => {
   try {
     const users = await User.find({});
     
-    // If no users exist, return sample data for testing
+    // Return sample data if no users exist
     if (users.length === 0) {
       const sampleUsers = [
         {
           name: "Alex Johnson",
-          location: "San Francisco, CA",
+          location: "UCI Campus",
           year: "Junior",
-          skillsWanted: "Machine Learning, Data Science",
-          skillsOffered: "React, Node.js, JavaScript"
+          skillsWanted: ["Machine Learning", "Data Science"],
+          skillsOffered: ["React", "Node.js", "JavaScript"]
         },
         {
           name: "Sarah Kim",
-          location: "Los Angeles, CA", 
+          location: "Irvine", 
           year: "Senior",
-          skillsWanted: "Business Strategy, Marketing",
-          skillsOffered: "UI/UX Design, Adobe Creative Suite"
+          skillsWanted: ["Business Strategy", "Marketing"],
+          skillsOffered: ["UI/UX Design", "Adobe Creative Suite"]
         },
         {
           name: "Mike Chen",
-          location: "Seattle, WA",
+          location: "UCI Campus",
           year: "Sophomore",
-          skillsWanted: "Programming, Web Design",
-          skillsOffered: "Calculus Help, Music Theory"
+          skillsWanted: ["Programming", "Web Design"],
+          skillsOffered: ["Calculus", "Music Theory"]
         }
       ];
-      
       return res.json(sampleUsers);
     }
     
@@ -52,37 +49,26 @@ router.get('/', async (req, res) => {
 // POST /api/users - Create a new user profile
 router.post('/', upload.any(), async (req, res) => {
   try {
- uploading
-    const { name, location, year, talents } = req.body;
-    let skillsWanted = JSON.parse(req.body.skillsWanted || '[]');
-    skillsWanted= skillsWanted.join(', '); 
-    let skillsOffered = JSON.parse(req.body.skillsOffered || '[]');
-    skillsOffered= skillsOffered.join(', ');  
-    
-    
-
-    if (!name || !location || !year) {
-      return res.status(400).json({ error: 'Name, location, and year are required fields' });
-    }
-
-    const { 
+    const {
       firstName,
       lastName,
       age,
       location,
       year,
       talents,
-      skillsWanted, // Should be an array
-      skillsOffered, // Should be an array
       instagram,
       snapchat,
       tiktok,
       discord,
       twitter,
-      phone, // Assuming phone is part of signup form now
-      email, // Assuming email is part of signup form now
-      password // <-- Add password here
+      phone,
+      email,
+      password
     } = req.body;
+
+    // Parse skills arrays from form data
+    let skillsWanted = JSON.parse(req.body.skillsWanted || '[]');
+    let skillsOffered = JSON.parse(req.body.skillsOffered || '[]');
     
     // Validation
     if (!firstName || !lastName || !age || !location || !year || !email) {
@@ -90,47 +76,39 @@ router.post('/', upload.any(), async (req, res) => {
         error: 'First name, last name, age, location, year, and email are required fields' 
       });
     }
-    
-    // Combine first and last name for the 'name' field (if you still need it, otherwise remove 'name' from model/schema)
-    // Assuming 'name' is no longer needed based on model update, using firstName and lastName instead.
- main
 
     const newUser = new User({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
-      age: age,
+      age: parseInt(age),
       location: location.trim(),
       year: year.trim(),
       talents: talents || '',
- uploading
-      skillsWanted:skillsWanted, // Convert back to string
-      skillsOffered: skillsOffered, // Convert back to string
-
-      skillsWanted: skillsWanted || [], // Ensure it's an array
-      skillsOffered: skillsOffered || [], // Ensure it's an array
-      instagram: instagram || '',
-      snapchat: snapchat || '',
-      tiktok: tiktok || '',
-      discord: discord || '',
-      twitter: twitter || '',
+      skillsWanted,
+      skillsOffered,
+      socials: {
+        instagram: instagram || '',
+        snapchat: snapchat || '',
+        tiktok: tiktok || '',
+        discord: discord || '',
+        twitter: twitter || ''
+      },
       phone: phone || '',
-      email: email.trim(),
-      password: password // <-- Add password here
- main
+      email: email.trim().toLowerCase()
     });
-    
-    // We should hash the password before saving
+
+    // Hash password before saving
     await newUser.setPassword(password);
 
     const savedUser = await newUser.save();
-    // Do not send password back in response
+    
+    // Remove password from response
     const userResponse = savedUser.toObject();
     delete userResponse.password;
 
     res.status(201).json(userResponse);
   } catch (error) {
     console.error('Error creating user:', error);
-    // Check for duplicate key error (e.g., email unique constraint)
     if (error.code === 11000) {
       return res.status(409).json({ error: 'Email or phone number already exists' });
     }
@@ -138,137 +116,70 @@ router.post('/', upload.any(), async (req, res) => {
   }
 });
 
- uploading
-
-// GET /api/users/me - Fetch the currently authenticated user's profile using email in header
+// GET /api/users/me - Get current user's profile
 router.get('/me', async (req, res) => {
-  // Use email from a custom header for authentication (simplified)
-  const userEmail = req.headers['x-user-email']; // Read email from X-User-Email header
+  const userEmail = req.headers['x-user-email'];
 
   if (!userEmail) {
     return res.status(401).json({ error: 'Unauthorized: Email header missing' });
   }
 
   try {
-    const user = await User.findOne({ email: userEmail }); // Find user by email
-    
-    if (!user) {
-      return res.status(404).json({ error: 'User not found with provided email' });
-    }
-    
-    // Return the user profile data
-    res.json(user);
-  } catch (error) {
-    console.error('Error fetching user profile by email:', error);
-    res.status(500).json({ error: 'Failed to fetch user profile' });
-  }
-});
- main
-
-// GET /api/users/:id - Get a specific user by ID
-// NOTE: This route might be redundant if /me is used for the current user
-// but keeping it in case fetching other users by ID is needed.
-router.get('/:id', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id); // Fetch user by ID from URL parameter
+    const user = await User.findOne({ email: userEmail });
     
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
     
-    // Return the user profile data
     res.json(user);
   } catch (error) {
-    console.error('Error fetching user profile by ID:', error);
+    console.error('Error fetching user profile:', error);
     res.status(500).json({ error: 'Failed to fetch user profile' });
   }
 });
 
-// GET /api/users/:id - Get a specific user by ID
-router.get('/email/:email/matches', async (req, res, next) => {
+// GET /api/users/email/:email/matches - Get user's matches
+router.get('/email/:email/matches', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.params.email }).populate('matches');
     if (!user) return res.status(404).json({ error: 'User not found' });
     
     res.json(user.matches);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    console.error('Error fetching matches:', error);
+    res.status(500).json({ error: 'Failed to fetch matches' });
   }
 });
 
-
-// Like a user
+// POST /api/users/like - Like a user
 router.post('/like', async (req, res) => {
-  const { senderId, receiverId } = req.body;
+  const { senderEmail, receiverEmail } = req.body;
 
   try {
-    const sender = await User.findById(senderId);
-    const receiver = await User.findById(receiverId);
+    const sender = await User.findOne({ email: senderEmail });
+    const receiver = await User.findOne({ email: receiverEmail });
 
-    // Add to likesSent and likesReceived
-    if (!sender.likesSent.includes(receiverId)) {
-      sender.likesSent.push(receiverId);
-      receiver.likesReceived.push(senderId);
-    }
-
-    // If receiver already liked sender → it's a match!
-    if (receiver.likesSent.includes(senderId)) {
-      sender.matches.push(receiverId);
-      receiver.matches.push(senderId);
-    }
-
-    await sender.save();
-    await receiver.save();
-
-    res.status(200).json({ message: 'Like processed' });
-  } catch (err) {
-    res.status(500).json({ error: 'Error processing like' });
-  }
-});
-
-
-// PUT /api/users/:id - Update a user profile
-router.put('/:id', async (req, res) => {
-  try {
-    const { name, location, year, talents, skillsWanted, skillsOffered } = req.body;
-    
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      {
-        name: name?.trim(),
-        location: location?.trim(),
-        year: year?.trim(),
-        talents: talents || '',
-        skillsWanted: skillsWanted || '',
-        skillsOffered: skillsOffered || ''
-      },
-      { new: true, runValidators: true }
-    );
-    
-    if (!updatedUser) {
+    if (!sender || !receiver) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
-    res.json(updatedUser);
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ error: 'Failed to update user profile' });
-  }
-});
 
-// DELETE /api/users/:id - Delete a user profile
-router.delete('/:id', async (req, res) => {
-  try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    
-    if (!deletedUser) {
-      return res.status(404).json({ error: 'User not found' });
+    // Add to likes
+    if (!sender.likesSent.includes(receiver._id)) {
+      sender.likesSent.push(receiver._id);
+      receiver.likesReceived.push(sender._id);
     }
-    
-    res.json({ message: 'User profile deleted successfully' });
+
+    // Check for match
+    if (receiver.likesSent.includes(sender._id)) {
+      sender.matches.push(receiver._id);
+      receiver.matches.push(sender._id);
+    }
+
+    await Promise.all([sender.save(), receiver.save()]);
+    res.status(200).json({ message: 'Like processed successfully' });
   } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ error: 'Failed to delete user profile' });
+    console.error('Error processing like:', error);
+    res.status(500).json({ error: 'Failed to process like' });
   }
 });
 

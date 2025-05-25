@@ -1,14 +1,10 @@
 'use client';
 
-emailUpdates
-import React, { useState, useContext, use } from 'react';
+import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthContext } from '../context/authContext'; // Add this line
-=======
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-main
+import { AuthContext } from '../context/authContext';
 
+// Constants
 const yearOptions = [
   '1st',
   '2nd',
@@ -44,8 +40,8 @@ function formatPhoneNumber(value) {
 }
 
 export default function SignUp() {
-   const router = useRouter();
- const { setUserEmail } = useContext(AuthContext);
+  const router = useRouter();
+  const { setUserEmail } = useContext(AuthContext);
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(20);
   const [loading, setLoading] = useState(false);
@@ -83,8 +79,6 @@ export default function SignUp() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [skillsError, setSkillsError] = useState('');
 
-  const router = useRouter();
-
   // Progress values for each step (now 6 steps)
   const stepProgress = [Math.round((1/6)*100), Math.round((2/6)*100), Math.round((3/6)*100), Math.round((4/6)*100), Math.round((5/6)*100), 100];
 
@@ -98,7 +92,6 @@ const handleStartSwapping = async () => {
   setError('');
   setSuccess(false);
   try {
-    // Format the data according to backend requirements
     const userData = {
       firstName: form.firstName.trim(),
       lastName: form.lastName.trim(),
@@ -117,47 +110,28 @@ const handleStartSwapping = async () => {
       skillsOffered: form.skillsOffered
     };
 
-    // Debug logs
-    console.log('Form data:', form);
-    console.log('User data being sent:', userData);
-    console.log('Required fields check:', {
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      age: userData.age,
-      location: userData.location,
-      year: userData.year,
-      email: userData.email,
-      password: userData.password
-    });
-    console.log('Password value from form state before sending:', form.password);
-
-    // Send the form data to the backend
-    const response = await fetch('http://localhost:4000/api/users', {
+    // Update port to match server
+    const response = await fetch('http://localhost:4001/api/users', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify(userData)
     });
     
-    const responseData = await response.json();
-    console.log('Backend response:', responseData);
-
     if (!response.ok) {
-      throw new Error(responseData.error || 'Signup failed');
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Registration failed');
     }
 
-    console.log('Signup successful. Backend response:', responseData);
-    
-    // Use AuthContext to set user email after successful signup
-    setUserEmail(responseData.email);
-    console.log('Stored userEmail using AuthContext:', responseData.email);
-
+    const data = await response.json();
+    setUserEmail(data.email);
     setSuccess(true);
-    // Redirect to the main app page after successful signup
     router.push('/swipe');
-
   } catch (err) {
-    console.error('Signup error:', err);
-    setError(err.message);
+    console.error('Registration error:', err);
+    setError(err.message || 'Failed to connect to server');
   } finally {
     setLoading(false);
   }
@@ -292,8 +266,8 @@ const handleStartSwapping = async () => {
 uploading
     if (step === 6) {
       setLoading(true);
-
       try {
+        await handleStartSwapping();
         setSuccess(true);
         setProgress(100);
         setFinished(true);
@@ -329,50 +303,61 @@ main
     }
   };
 
-  const uploadData = async (formValues) =>{
+  const uploadData = async (formValues) => {
     try {
-    
-    const payload = new FormData();
+      const payload = new FormData();
+      
+      // Basic user info
+      payload.append('name', `${formValues.firstName} ${formValues.lastName}`.trim());
+      payload.append('email', formValues.email.trim());
+      payload.append('password', formValues.password);
+      payload.append('age', formValues.age);
+      payload.append('year', formValues.year);
+      payload.append('location', formValues.location);
 
-
-    payload.append('name', `${formValues.firstName} ${formValues.lastName}`.trim());
-
-    const skipKeys = ['video', 'image', 'skillsOffered', 'skillsWanted', 'firstName', 'lastName'];
-    Object.entries(formValues).forEach(([key, value]) => {
-      if (!skipKeys.includes(key)) {
-        payload.append(key, value);
+      // Phone number with country code
+      if (formValues.phone) {
+        payload.append('phone', `${formValues.countryCode}${formValues.phone.replace(/\D/g, '')}`);
       }
-    });
-    for (let pair of payload.entries()) {
-  console.log(`${pair[0]}: ${pair[1]}`);
-}
-    
-    // Append arrays as JSON strings
-    payload.append('skillsOffered', JSON.stringify(formValues.skillsOffered));
-    payload.append('skillsWanted', JSON.stringify(formValues.skillsWanted));
 
-    // Append files if present
-    if (formValues.video) payload.append('video', formValues.video);
-    if (formValues.image) payload.append('image', formValues.image);
+      // Social media handles
+      const socials = {
+        instagram: formValues.instagram || '',
+        snapchat: formValues.snapchat || '',
+        tiktok: formValues.tiktok || '',
+        discord: formValues.discord || '',
+        twitter: formValues.twitter || ''
+      };
+      payload.append('socials', JSON.stringify(socials));
 
-    const response = await fetch('http://localhost:4000/api/users', {
-      method: 'POST',
-      body: payload,
-    });
+      // Skills
+      payload.append('skillsOffered', JSON.stringify(formValues.skillsOffered));
+      payload.append('skillsWanted', JSON.stringify(formValues.skillsWanted));
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Server error: ${response.status} ${errorText}`);
+      // Files
+      if (formValues.video) payload.append('video', formValues.video);
+      if (formValues.image) payload.append('image', formValues.image);
+
+      const response = await fetch('http://localhost:4001/api/users', {
+        method: 'POST',
+        body: payload,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const data = await response.json();
+      setUserEmail(data.email);
+      setSuccess(true);
+      router.push('/swipe');
+    } catch (error) {
+      console.error('Upload failed:', error);
+      setError(error.message || 'Failed to connect to server');
+      setLoading(false);
     }
-
-    const data = await response.json();
-    console.log('Success:', data);
-    return data;
-  } catch (error) {
-    console.error('Upload failed:', error);
-    alert(`Error uploading data: ${error.message}`);
-  }
-};
+  };
   return (
     <div className="w-[393px] h-[852px] bg-white rounded-none shadow-none flex flex-col justify-between mx-auto p-0" style={{ minHeight: '852px', minWidth: '393px' }}>
       {/* Progress Bar with Fraction */}
@@ -404,7 +389,6 @@ main
               >
                 Back
               </button>
-emailUpdates
               <button 
   className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition"
   onClick={handleStartSwapping}
@@ -412,13 +396,6 @@ emailUpdates
 >
   Start Swapping
 </button>
-=======
-              <button className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition" onClick={() => {
-                console.log('Start Swapping button clicked');
-                router.push('/swipe');
-                console.log('Navigating to /swipe');
-              }}>Start Swapping</button>
-main
             </div>
           </div>
         ) : step === 5 ? (

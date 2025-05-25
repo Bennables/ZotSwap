@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
+import { AuthContext } from '../context/authContext';
 
+// Constants
 const yearOptions = [
   '1st',
   '2nd',
@@ -38,6 +40,8 @@ function formatPhoneNumber(value) {
 }
 
 export default function SignUp() {
+  const router = useRouter();
+  const { setUserEmail } = useContext(AuthContext);
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(20);
   const [loading, setLoading] = useState(false);
@@ -67,13 +71,13 @@ export default function SignUp() {
     skillInputOffered: '',
     skillInputWanted: '',
     countryCode: '+1',
+    password: '',
+    confirmPassword: '',
   });
   const [videoPreview, setVideoPreview] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [skillsError, setSkillsError] = useState('');
-
-  const router = useRouter();
 
   // Progress values for each step (now 6 steps)
   const stepProgress = [Math.round((1/6)*100), Math.round((2/6)*100), Math.round((3/6)*100), Math.round((4/6)*100), Math.round((5/6)*100), 100];
@@ -83,6 +87,55 @@ export default function SignUp() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+const handleStartSwapping = async () => {
+  setLoading(true);
+  setError('');
+  setSuccess(false);
+  try {
+    const userData = {
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      age: parseInt(form.age),
+      location: form.location.trim(),
+      year: form.year.trim(),
+      email: form.email.trim(),
+      password: form.password,
+      phone: form.phone ? `${form.countryCode}${form.phone.replace(/\D/g, '')}` : undefined,
+      instagram: form.instagram || '',
+      snapchat: form.snapchat || '',
+      tiktok: form.tiktok || '',
+      discord: form.discord || '',
+      twitter: form.twitter || '',
+      skillsWanted: form.skillsWanted,
+      skillsOffered: form.skillsOffered
+    };
+
+    // Update port to match server
+    const response = await fetch('http://localhost:4001/api/users', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Registration failed');
+    }
+
+    const data = await response.json();
+    setUserEmail(data.email);
+    setSuccess(true);
+    router.push('/swipe');
+  } catch (err) {
+    console.error('Registration error:', err);
+    setError(err.message || 'Failed to connect to server');
+  } finally {
+    setLoading(false);
+  }
+};
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     if (!files || files.length === 0) return;
@@ -158,10 +211,21 @@ export default function SignUp() {
     if (step === 1) {
       // Validate all fields
       const errors = {};
-      if (!form.firstName) errors.firstName = 'First name is required';
+      if (!form.firstName) errors.Name = 'First name is required';
       if (!form.lastName) errors.lastName = 'Last name is required';
       if (!form.age) errors.age = 'Age is required';
       if (!form.year) errors.year = 'Year in school is required';
+      
+      // Password validation
+      if (!form.password) errors.password = 'Password is required';
+      if (!form.confirmPassword) errors.confirmPassword = 'Confirm password is required';
+      if (form.password && form.confirmPassword && form.password !== form.confirmPassword) {
+        errors.confirmPassword = 'Passwords do not match.';
+      }
+      if (form.password && form.password.length < 6) {
+        errors.password = 'Password must be at least 6 characters long.';
+      }
+
       setFieldErrors(errors);
       if (Object.keys(errors).length > 0) return;
       setFieldErrors({});
@@ -199,9 +263,11 @@ export default function SignUp() {
       setProgress(stepProgress[5]);
       return;
     }
+uploading
     if (step === 6) {
       setLoading(true);
       try {
+        await handleStartSwapping();
         setSuccess(true);
         setProgress(100);
         setFinished(true);
@@ -212,6 +278,7 @@ export default function SignUp() {
       }
       return;
     }
+main
   };
 
   // Add skip for now for talents showcase
@@ -236,6 +303,61 @@ export default function SignUp() {
     }
   };
 
+  const uploadData = async (formValues) => {
+    try {
+      const payload = new FormData();
+      
+      // Basic user info
+      payload.append('name', `${formValues.firstName} ${formValues.lastName}`.trim());
+      payload.append('email', formValues.email.trim());
+      payload.append('password', formValues.password);
+      payload.append('age', formValues.age);
+      payload.append('year', formValues.year);
+      payload.append('location', formValues.location);
+
+      // Phone number with country code
+      if (formValues.phone) {
+        payload.append('phone', `${formValues.countryCode}${formValues.phone.replace(/\D/g, '')}`);
+      }
+
+      // Social media handles
+      const socials = {
+        instagram: formValues.instagram || '',
+        snapchat: formValues.snapchat || '',
+        tiktok: formValues.tiktok || '',
+        discord: formValues.discord || '',
+        twitter: formValues.twitter || ''
+      };
+      payload.append('socials', JSON.stringify(socials));
+
+      // Skills
+      payload.append('skillsOffered', JSON.stringify(formValues.skillsOffered));
+      payload.append('skillsWanted', JSON.stringify(formValues.skillsWanted));
+
+      // Files
+      if (formValues.video) payload.append('video', formValues.video);
+      if (formValues.image) payload.append('image', formValues.image);
+
+      const response = await fetch('http://localhost:4001/api/users', {
+        method: 'POST',
+        body: payload,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const data = await response.json();
+      setUserEmail(data.email);
+      setSuccess(true);
+      router.push('/swipe');
+    } catch (error) {
+      console.error('Upload failed:', error);
+      setError(error.message || 'Failed to connect to server');
+      setLoading(false);
+    }
+  };
   return (
     <div className="w-[393px] h-[852px] bg-white rounded-none shadow-none flex flex-col justify-between mx-auto p-0" style={{ minHeight: '852px', minWidth: '393px' }}>
       {/* Progress Bar with Fraction */}
@@ -267,11 +389,13 @@ export default function SignUp() {
               >
                 Back
               </button>
-              <button className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition" onClick={() => {
-                console.log('Start Swapping button clicked');
-                router.push('/swipe');
-                console.log('Navigating to /swipe');
-              }}>Start Swapping</button>
+              <button 
+  className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition"
+  onClick={handleStartSwapping}
+  type="button"
+>
+  Start Swapping
+</button>
             </div>
           </div>
         ) : step === 5 ? (
@@ -353,6 +477,7 @@ export default function SignUp() {
                 onClick={() => {
                   setFinished(true);
                   setProgress(100);
+                  uploadData(form);
                 }}
                 type="button"
                 disabled={loading}
@@ -556,6 +681,8 @@ export default function SignUp() {
               </button>
             </div>
           </>
+        ) : step === 6 ? (
+          null /* Old Password Step - Removed */
         ) : (
           <>
             <h2 className="text-2xl font-bold mb-8 text-center">Let's Get You Started!</h2>
@@ -593,7 +720,7 @@ export default function SignUp() {
             {fieldErrors.age && <div className="mb-3 text-red-500 text-sm animate-pulse">{fieldErrors.age}</div>}
             <label className="font-semibold mb-1">Year in School</label>
             <select
-              className={`mb-8 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 ${fieldErrors.year ? 'border-red-500' : ''}`}
+              className={`mb-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 ${fieldErrors.year ? 'border-red-500' : ''}`}
               name="year"
               value={form.year}
               onChange={handleChange}
@@ -605,6 +732,31 @@ export default function SignUp() {
               ))}
             </select>
             {fieldErrors.year && <div className="mb-3 text-red-500 text-sm animate-pulse">{fieldErrors.year}</div>}
+
+            {/* Password Fields */}
+            <label className="font-semibold mb-1">Password</label>
+            <input
+              className={`mb-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 ${fieldErrors.password ? 'border-red-500' : ''}`}
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              type="password"
+              disabled={loading}
+            />
+            {fieldErrors.password && <div className="mb-3 text-red-500 text-sm animate-pulse">{fieldErrors.password}</div>}
+            <label className="font-semibold mb-1">Confirm Password</label>
+            <input
+              className={`mb-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 ${fieldErrors.confirmPassword ? 'border-red-500' : ''}`}
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm your password"
+              type="password"
+              disabled={loading}
+            />
+             {fieldErrors.confirmPassword && <div className="mb-8 text-red-500 text-sm animate-pulse">{fieldErrors.confirmPassword}</div>}
+
             <button
               className="w-full py-3 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition flex items-center justify-center disabled:opacity-50"
               onClick={handleNext}

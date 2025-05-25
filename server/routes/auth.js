@@ -52,6 +52,49 @@ router.post('/signup', async (req, res) => {
     }
 });
 
+router.post('/like', async (req, res) => {
+  const { senderEmail, receiverEmail } = req.body;
+
+  try {
+    // Add receiverEmail to sender's likedUsers list if not already present
+    await User.updateOne(
+      { email: senderEmail },
+      { $addToSet: { likedUsers: receiverEmail } }
+    );
+
+    // Add senderEmail to receiver's likedBy list if not already present
+    await User.updateOne(
+      { email: receiverEmail },
+      { $addToSet: { likedBy: senderEmail } }
+    );
+
+    res.status(200).json({ message: 'Like recorded successfully' });
+  } catch (error) {
+    console.error('Error updating like:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+router.get('/email/:email/matches', async (req, res, next) => {
+  try {
+    const { email } = req.params;
+
+    // Find user by email and populate matches
+    const user = await User.findOne({ email }).populate('matches', 'name location talents skillsWanted skillsOffered');
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Return the matches array
+    res.json(user.matches);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 /**
  * Route to handle user login
  * @param {Object} req - The request object containing user credentials

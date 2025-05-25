@@ -158,7 +158,7 @@ export default function SignUp() {
     if (step === 1) {
       // Validate all fields
       const errors = {};
-      if (!form.firstName) errors.firstName = 'First name is required';
+      if (!form.firstName) errors.Name = 'First name is required';
       if (!form.lastName) errors.lastName = 'Last name is required';
       if (!form.age) errors.age = 'Age is required';
       if (!form.year) errors.year = 'Year in school is required';
@@ -201,6 +201,7 @@ export default function SignUp() {
     }
     if (step === 6) {
       setLoading(true);
+
       try {
         setSuccess(true);
         setProgress(100);
@@ -236,6 +237,50 @@ export default function SignUp() {
     }
   };
 
+  const uploadData = async (formValues) =>{
+    try {
+    
+    const payload = new FormData();
+
+
+    payload.append('name', `${formValues.firstName} ${formValues.lastName}`.trim());
+
+    const skipKeys = ['video', 'image', 'skillsOffered', 'skillsWanted', 'firstName', 'lastName'];
+    Object.entries(formValues).forEach(([key, value]) => {
+      if (!skipKeys.includes(key)) {
+        payload.append(key, value);
+      }
+    });
+    for (let pair of payload.entries()) {
+  console.log(`${pair[0]}: ${pair[1]}`);
+}
+    
+    // Append arrays as JSON strings
+    payload.append('skillsOffered', JSON.stringify(formValues.skillsOffered));
+    payload.append('skillsWanted', JSON.stringify(formValues.skillsWanted));
+
+    // Append files if present
+    if (formValues.video) payload.append('video', formValues.video);
+    if (formValues.image) payload.append('image', formValues.image);
+
+    const response = await fetch('http://localhost:4000/api/users', {
+      method: 'POST',
+      body: payload,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Server error: ${response.status} ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('Success:', data);
+    return data;
+  } catch (error) {
+    console.error('Upload failed:', error);
+    alert(`Error uploading data: ${error.message}`);
+  }
+};
   return (
     <div className="w-[393px] h-[852px] bg-white rounded-none shadow-none flex flex-col justify-between mx-auto p-0" style={{ minHeight: '852px', minWidth: '393px' }}>
       {/* Progress Bar with Fraction */}
@@ -353,6 +398,7 @@ export default function SignUp() {
                 onClick={() => {
                   setFinished(true);
                   setProgress(100);
+                  uploadData(form);
                 }}
                 type="button"
                 disabled={loading}

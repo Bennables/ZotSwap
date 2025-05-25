@@ -49,7 +49,6 @@ const UserSchema = new mongoose.Schema({
   profilePicture: String,
   year: String,
   location: String,
-  talents: String,
   socials: String,
   skillsWanted: String,
   skillsOffered: String,

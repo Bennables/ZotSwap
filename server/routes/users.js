@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
+// At the top of your route file
+const multer = require('multer');
+const upload = multer(); // memory storage by default
 
 // User Schema - defines the structure of user profiles
 const userSchema = new mongoose.Schema({
@@ -51,7 +54,6 @@ router.get('/', async (req, res) => {
           name: "Alex Johnson",
           location: "San Francisco, CA",
           year: "Junior",
-          talents: "Web Development, Guitar",
           skillsWanted: "Machine Learning, Data Science",
           skillsOffered: "React, Node.js, JavaScript"
         },
@@ -59,7 +61,6 @@ router.get('/', async (req, res) => {
           name: "Sarah Kim",
           location: "Los Angeles, CA", 
           year: "Senior",
-          talents: "Photography, Design",
           skillsWanted: "Business Strategy, Marketing",
           skillsOffered: "UI/UX Design, Adobe Creative Suite"
         },
@@ -67,7 +68,6 @@ router.get('/', async (req, res) => {
           name: "Mike Chen",
           location: "Seattle, WA",
           year: "Sophomore",
-          talents: "Piano, Math Tutoring",
           skillsWanted: "Programming, Web Design",
           skillsOffered: "Calculus Help, Music Theory"
         }
@@ -84,24 +84,27 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/users - Create a new user profile
-router.post('/', async (req, res) => {
+router.post('/', upload.any(), async (req, res) => {
   try {
-    const { name, location, year, talents, skillsWanted, skillsOffered } = req.body;
+    const { name, location, year, talents } = req.body;
+    let skillsWanted = JSON.parse(req.body.skillsWanted || '[]');
+    skillsWanted= skillsWanted.join(', '); 
+    let skillsOffered = JSON.parse(req.body.skillsOffered || '[]');
+    skillsOffered= skillsOffered.join(', ');  
     
-    // Validation
+    
+
     if (!name || !location || !year) {
-      return res.status(400).json({ 
-        error: 'Name, location, and year are required fields' 
-      });
+      return res.status(400).json({ error: 'Name, location, and year are required fields' });
     }
-    
+
     const newUser = new User({
       name: name.trim(),
       location: location.trim(),
       year: year.trim(),
       talents: talents || '',
-      skillsWanted: skillsWanted || '',
-      skillsOffered: skillsOffered || ''
+      skillsWanted:skillsWanted, // Convert back to string
+      skillsOffered: skillsOffered, // Convert back to string
     });
     
     const savedUser = await newUser.save();
@@ -111,6 +114,7 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to create user profile' });
   }
 });
+
 
 // GET /api/users/:id - Get a specific user by ID
 router.get('/:id', async (req, res) => {

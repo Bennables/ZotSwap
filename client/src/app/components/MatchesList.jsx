@@ -32,7 +32,6 @@ export default function MatchesViewer({ currentUserId }) {
           <div key={user._id} className="border-b py-4">
             <h3 className="text-xl font-semibold">{user.name}</h3>
             <p className="text-gray-600"> {user.location || 'Unknown'}</p>
-            <p className="text-gray-600"> Talents: {user.talents || 'None listed'}</p>
             <p className="text-gray-600"> Wants: {user.skillsWanted || 'None listed'}</p>
             <p className="text-gray-600"> Offers: {user.skillsOffered || 'None listed'}</p>
           </div>

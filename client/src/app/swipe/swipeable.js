@@ -26,8 +26,8 @@ export default function SwipeableCard({currentUserId}) {
     onSwipedLeft: (swipeEventData) => {
         setSwipeDir("Swiped Left");
         if(swipeEventData.event.target){
-            handleLike
-            animate(swipeEventData.event.target, { opacity: 0.1, x: -400 }, { duration: 0.5 }).finished.then(() => {
+            handleNext();
+            animate(swipeEventData.event.target, { opacity: 0.1, x: -1300 }, { duration: 0.5 }).finished.then(() => {
             window.location.reload(); // 👈 replace with actual path
         });
         }
@@ -35,8 +35,9 @@ export default function SwipeableCard({currentUserId}) {
     onSwipedRight: (swipeEventData) => {
         setSwipeDir('Swiped Right');
         if(swipeEventData.event.target){
-            handleLike
-            animate(swipeEventData.event.target, { opacity: 0.1, x: 400 }, { duration: 0.5 }).finished.then(() => {
+            handleLike();
+            handleNext();
+            animate(swipeEventData.event.target, { opacity: 0.1, x: 1300 }, { duration: 0.5 }).finished.then(() => {
             window.location.reload(); // 👈 replace with actual path
         });
         }
@@ -69,8 +70,8 @@ export default function SwipeableCard({currentUserId}) {
   const user = profiles[currentIndex] || {};
   
   return (
-    <div {...handlers} className = 'box'>
-      <div>{swipeDir || <div className="max-w-sm mx-auto mt-10 bg-white rounded-xl shadow-lg p-6 text-center box">
+    <div {...handlers} className = 'ggggg'>
+      <div>{<div className="max-w-sm mx-auto mt-10 bg-white rounded-xl shadow-lg p-6 text-center">
       <img
         src={user.profilePicture || '/mnt/data/PFP.png'}
         className="w-28 h-28 rounded-full mx-auto mb-4 object-cover shadow-md"
@@ -89,18 +90,6 @@ export default function SwipeableCard({currentUserId}) {
       <p className="text-gray-600 mb-4">{user.skillsWanted || 'No skills wanted listed'}</p>
   
       <div className="flex justify-center space-x-6 mt-6">
-        <button
-          onClick={handleLike}
-          className="bg-green-500 hover:bg-green-600 text-white w-10 h-10 rounded-full text-xl"
-        >
-          ✓
-        </button>
-        <button
-          onClick={handleNext}
-          className="bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-full text-xl"
-        >
-          ✕
-        </button>
       </div>
     </div>}</div>
         

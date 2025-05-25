@@ -43,19 +43,16 @@ const UserSchema = new mongoose.Schema({
     select: false, // Exclude from queries by default
   },
 
-  // Define the schema for the User model
+  // Profile info
   name: String,
   age: Number,
   profilePicture: String,
   year: String,
   location: String,
   talents: String,
-  phone: String,
-  email: { type: String, required: true, unique: true },
   socials: String,
   skillsWanted: String,
   skillsOffered: String,
-
 
   // Ratings
   ratingSum: {
@@ -66,24 +63,18 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-
 });
 
-/**
- * Method to compare password with the hashed password in the database
- * @param {*} password - The password to compare
- */
+// Hash and set password
 UserSchema.methods.setPassword = async function (password) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(password, salt);
-}
+};
 
-/**
- * Method to compare a given password with the stored hashed password
- * @param {*} password - The password to compare
- */
+// Compare given password with hashed password
 UserSchema.methods.validatePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
-}
+};
 
-module.exports = mongoose.model('User', UserSchema);
+// ✅ Safe export to prevent OverwriteModelError
+module.exports = mongoose.models.User || mongoose.model('User', UserSchema);

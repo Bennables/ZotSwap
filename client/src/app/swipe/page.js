@@ -4,7 +4,7 @@ import './styles.css'
 
 import { animate } from "motion"
 // App.js or page.js
-import SwipeableCard from './Swipeable';
+import SwipeableCard from './swipeable';
 
 const App = () => {
   return (

@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './page.module.css';
@@ -8,62 +9,22 @@ import SignUp from './components/SignUp'
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
-      {/* Navigation Header */}
-      <nav className="p-4 bg-white shadow-md">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
-            ZotSwap
-          </Link>
-          <div className="space-x-4">
-            <Link href="/profile" className="text-gray-600 hover:text-blue-600">
-              Profile
-            </Link>
-            <Link href="/auth/login" className="text-gray-600 hover:text-blue-600">
-              Login
-            </Link>
-          </div>
+    <main className="min-h-screen flex items-center justify-center bg-[#BDDFDC]">
+      <div className="w-full max-w-md p-8 rounded-3xl shadow-lg bg-white border border-[#6A89A7] flex flex-col items-center">
+        <h1 className="text-2xl font-bold text-[#384959] mb-8 mt-2 text-center">Welcome to ZotSwap!</h1>
+        <button className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#BDDFDC] hover:bg-[#88BDF2] transition">Sign In with UCINETID</button>
+        <button className="w-full py-3 mb-4 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#BDDFDC] hover:bg-[#88BDF2] transition">Sign In with Google</button>
+        <button className="w-full py-3 mb-6 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#BDDFDC] hover:bg-[#88BDF2] transition">Sign In with Apple</button>
+        <div className="flex items-center w-full mb-4">
+          <div className="flex-grow border-t border-[#6A89A7]" />
+          <span className="mx-2 text-[#384959] text-sm">Do not have an account?</span>
+          <div className="flex-grow border-t border-[#6A89A7]" />
         </div>
-      </nav>
-
-      {/* Hero Section */}
-      <div className="max-w-6xl mx-auto py-20 px-4">
-        <div className="text-center">
-          <h1 className="text-5xl font-bold text-gray-800 mb-6">
-            Welcome to ZotSwap
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Connect with UCI students, share skills, and make new friends
-          </p>
-          <Link 
-            href="/auth/signup" 
-            className="bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition"
-          >
-            Get Started
-          </Link>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mt-20">
-          <div className="p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Learn New Skills</h2>
-            <p className="text-gray-600">
-              Discover and learn new skills from fellow UCI students
-            </p>
-          </div>
-          <div className="p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Share Your Expertise</h2>
-            <p className="text-gray-600">
-              Teach others and develop your teaching abilities
-            </p>
-          </div>
-          <div className="p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Build Connections</h2>
-            <p className="text-gray-600">
-              Meet new people and grow your UCI network
-            </p>
-          </div>
-        </div>
+        <Link href="/profile" className="w-full">
+          <button className="w-full py-3 rounded-full border border-[#6A89A7] text-[#384959] font-medium bg-[#88BDF2] hover:bg-[#6A89A7] transition">
+            Register
+          </button>
+        </Link>
       </div>
     </main>
   );

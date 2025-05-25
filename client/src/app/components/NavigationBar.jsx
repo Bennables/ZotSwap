@@ -16,9 +16,9 @@ const Navbar = () => {
           <span className={isActive('/') ? 'text-blue-500' : 'text-gray-400'}>Home</span>
         </button>
 
-        <button onClick={() => router.push('/swap')} className="flex flex-col items-center text-sm">
-          <SwitchCamera className={`w-6 h-6 ${isActive('/swap') ? 'text-blue-500' : 'text-gray-400'}`} />
-          <span className={isActive('/swap') ? 'text-blue-500' : 'text-gray-400'}>Swap</span>
+        <button onClick={() => router.push('/swipe')} className="flex flex-col items-center text-sm">
+          <SwitchCamera className={`w-6 h-6 ${isActive('/swipe') ? 'text-blue-500' : 'text-gray-400'}`} />
+          <span className={isActive('/swipe') ? 'text-blue-500' : 'text-gray-400'}>Swap</span>
         </button>
 
         <button onClick={() => router.push('/matched')} className="flex flex-col items-center text-sm">

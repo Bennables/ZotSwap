@@ -1,15 +1,21 @@
 {
-  "name": "ZotSwap",
+  "name": "zotswap",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/Bennables/ZotSwap.git",
   "author": "justingrino <jgrino@uci.edu>",
   "license": "MIT",
-    "scripts": {
-    "dev": "concurrently -n CLIENT,API -c blue,green \"yarn --cwd client dev\" \"yarn --cwd server start\""
+  "scripts": {
+    "dev": "npx concurrently -n CLIENT,API -c blue,green \"yarn --cwd client dev\" \"yarn --cwd server start\""
   },
-
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "motion": "^12.12.2",
+    "react-native-gesture-handler": "^2.25.0",
+    "react-native-reanimated": "^3.17.5",
+    "react-swipeable": "^7.0.2",
+    "swiper": "^11.2.8"
   }
 }

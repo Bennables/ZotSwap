@@ -54,6 +54,10 @@ const UserSchema = new mongoose.Schema({
   skillsWanted: String,
   skillsOffered: String,
 
+  likesSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  likesReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+
   // Ratings
   ratingSum: {
     type: Number,

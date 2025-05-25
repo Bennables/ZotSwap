@@ -1,22 +1,24 @@
-
-
 'use client';
-import './styles.css'
+import './styles.css';
 import Navbar from '../components/NavigationBar';
-// App.js or page.js
 import SwipeableCard from './Swipeable';
+import { useContext } from 'react';
+import { AuthContext } from '../context/authContext';
 
 const App = () => {
+  const { email } = useContext(AuthContext);
+
   return (
     <div>
-    <h2>Swipe the Card</h2>
-    
-      <SwipeableCard content="👋 Swipe Me!" />
+      <h2>Swipe the Card</h2>
+      {email ? (
+        <SwipeableCard currentUserEmail={email} />
+      ) : (
+        <p>Loading user info...</p>
+      )}
       <Navbar />
     </div>
-    
   );
 };
-
 
 export default App;

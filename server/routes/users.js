@@ -113,20 +113,17 @@ router.post('/', async (req, res) => {
 });
 
 // GET /api/users/:id - Get a specific user by ID
-router.get('/:id', async (req, res) => {
+router.get('/email/:email/matches', async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findOne({ email: req.params.email }).populate('matches');
+    if (!user) return res.status(404).json({ error: 'User not found' });
     
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    
-    res.json(user);
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ error: 'Failed to fetch user profile' });
+    res.json(user.matches);
+  } catch (err) {
+    next(err);
   }
 });
+
 
 // Like a user
 router.post('/like', async (req, res) => {

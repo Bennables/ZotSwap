@@ -1,8 +1,13 @@
 'use client';
 
+emailUpdates
 import React, { useState, useContext, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '../context/authContext'; // Add this line
+=======
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+main
 
 const yearOptions = [
   '1st',
@@ -77,6 +82,8 @@ export default function SignUp() {
   const [imagePreview, setImagePreview] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [skillsError, setSkillsError] = useState('');
+
+  const router = useRouter();
 
   // Progress values for each step (now 6 steps)
   const stepProgress = [Math.round((1/6)*100), Math.round((2/6)*100), Math.round((3/6)*100), Math.round((4/6)*100), Math.round((5/6)*100), 100];
@@ -337,6 +344,7 @@ const handleStartSwapping = async () => {
               >
                 Back
               </button>
+emailUpdates
               <button 
   className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition"
   onClick={handleStartSwapping}
@@ -344,6 +352,13 @@ const handleStartSwapping = async () => {
 >
   Start Swapping
 </button>
+=======
+              <button className="flex-[2] px-8 py-3 rounded-full bg-[#88BDF2] text-[#384959] font-semibold text-lg shadow hover:bg-[#6A89A7] transition" onClick={() => {
+                console.log('Start Swapping button clicked');
+                router.push('/swipe');
+                console.log('Navigating to /swipe');
+              }}>Start Swapping</button>
+main
             </div>
           </div>
         ) : step === 5 ? (
@@ -360,7 +375,7 @@ const handleStartSwapping = async () => {
                 placeholder="@username"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">📸</span>
+              <img src="/instagram.png" alt="Instagram" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-2 flex items-center">
               <span className="mr-2">Snapchat</span>
@@ -372,7 +387,7 @@ const handleStartSwapping = async () => {
                 placeholder="@username"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">👻</span>
+              <img src="/snapchat.png" alt="Snapchat" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-2 flex items-center">
               <span className="mr-2">TikTok</span>
@@ -384,7 +399,7 @@ const handleStartSwapping = async () => {
                 placeholder="@username"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">🎵</span>
+              <img src="/tik-tok.png" alt="TikTok" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-2 flex items-center">
               <span className="mr-2">Discord</span>
@@ -396,7 +411,7 @@ const handleStartSwapping = async () => {
                 placeholder="username#1234"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">💬</span>
+              <img src="/discord.png" alt="Discord" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-4 flex items-center">
               <span className="mr-2">X (Twitter)</span>
@@ -408,7 +423,7 @@ const handleStartSwapping = async () => {
                 placeholder="@username"
                 disabled={loading}
               />
-              <span className="ml-2 text-2xl">🐦</span>
+              <img src="/twitter.png" alt="Twitter" className="ml-2 w-6 h-6 object-contain" />
             </div>
             <div className="mb-2 text-center text-gray-500 text-xs">You can edit this later in your profile.</div>
             <div className="flex w-full gap-2 mt-4">

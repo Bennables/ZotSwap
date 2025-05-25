@@ -149,10 +149,10 @@ destroy@1.2.0:
   resolved "https://registry.npmjs.org/destroy/-/destroy-1.2.0.tgz"
   integrity sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==
 
-dotenv@^16.4.5:
-  version "16.4.5"
-  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.4.5.tgz"
-  integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
+dotenv@^16.5.0:
+  version "16.5.0"
+  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.5.0.tgz"
+  integrity sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==
 
 dunder-proto@^1.0.1:
   version "1.0.1"
@@ -184,6 +184,11 @@ encodeurl@~2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/encodeurl/-/encodeurl-2.0.0.tgz"
   integrity sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==
+
+env@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.npmjs.org/env/-/env-0.0.2.tgz"
+  integrity sha512-yP8LfjO4ughSHD/3HgLPinWzexmaOGvRfs2TFx0SZhOm7j1xPi9evjuGcLiNVHIGLmcsgMak4eDbBzlYqGIVxw==
 
 es-define-property@^1.0.1:
   version "1.0.1"
@@ -469,7 +474,7 @@ mongodb-connection-string-url@^3.0.0:
     "@types/whatwg-url" "^11.0.2"
     whatwg-url "^14.1.0 || ^13.0.0"
 
-mongodb@~6.16.0:
+mongodb@^6.16.0, mongodb@~6.16.0:
   version "6.16.0"
   resolved "https://registry.npmjs.org/mongodb/-/mongodb-6.16.0.tgz"
   integrity sha512-D1PNcdT0y4Grhou5Zi/qgipZOYeWrhLEpk33n3nm6LGtz61jvO88WlrWCK/bigMjpnOdAUKKQwsGIl0NtWMyYw==
@@ -514,20 +519,20 @@ mquery@5.0.0:
   dependencies:
     debug "4.x"
 
-ms@^2.1.1, ms@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz"
-  integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
+ms@^2.1.1, ms@2.1.3:
+  version "2.1.3"
+  resolved "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz"
+  integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz"
   integrity sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==
 
-ms@2.1.3:
-  version "2.1.3"
-  resolved "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz"
-  integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
+ms@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz"
+  integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
 negotiator@0.6.3:
   version "0.6.3"
@@ -713,6 +718,11 @@ sparse-bitfield@^3.0.3:
   integrity sha512-kvzhi7vqKTfkh0PZU+2D2PIllw2ymqJKujUcyPMd9Y75Nv4nPbGJZXNhxsgdQab2BmlDct1YnfQCguEvHr7VsQ==
   dependencies:
     memory-pager "^1.0.2"
+
+start@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.npmjs.org/start/-/start-5.1.0.tgz"
+  integrity sha512-lirwWQmvBC65bnxU3HzKx5m7vfZJZTx/FrKyPWbtobcvujGbinQQRrNodtcgkp4mTZ00umzDeg7lraN351l0aA==
 
 statuses@2.0.1:
   version "2.0.1"
